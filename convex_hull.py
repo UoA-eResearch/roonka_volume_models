@@ -1,3 +1,4 @@
+import glob
 import bpy
 import bmesh
 from mathutils import Vector, Matrix
@@ -46,11 +47,18 @@ def remesh(obj, original):
     smoother.iterations = 30
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Smooth")
 
+base_dir = '/home/warrick/Desktop/roonka_features/'
+shapefiles = glob.glob(base_dir + '*.shp')
+for shp in shapefiles:
+    bpy.ops.importgis.shapefile(filepath=shp)
+    convex_hull, original = create_hull()
+    remesh(convex_hull, original)
+    bpy.ops.export_mesh.stl(filepath=base_dir + bpy.context.scene.objects.active.name + '-TEST.stl')
 
-bpy.ops.importgis.shapefile(filepath="/home/warrick/Desktop/roonka_features/F157.shp")
 
-convex_hull, original = create_hull()
-remesh(convex_hull, original)
+# bpy.ops.importgis.shapefile(filepath="/home/warrick/Desktop/roonka_features/F157.shp")
+# convex_hull, original = create_hull()
+# remesh(convex_hull, original)
 
 # bpy.ops.mesh.subdivide(number_cuts=3)
 # alternative method
