@@ -3,11 +3,6 @@ import bpy
 import bmesh
 from mathutils import Vector, Matrix
 
-
-# subdivide_amount = 1
-
-# TODO: importing shapefile programmatically https://blender.stackexchange.com/questions/52216/blendergis-import-call-from-python-script
-
 def create_hull():
     # CONVERTS TO CONVEX HULL
     context = bpy.context
@@ -54,11 +49,8 @@ for shp in shapefiles:
     convex_hull, original = create_hull()
     remesh(convex_hull, original)
     bpy.ops.export_mesh.stl(filepath=base_dir + bpy.context.scene.objects.active.name + '-TEST.stl')
-
-
-# bpy.ops.importgis.shapefile(filepath="/home/warrick/Desktop/roonka_features/F157.shp")
-# convex_hull, original = create_hull()
-# remesh(convex_hull, original)
+    # TODO: target individual meshes. not selecting single meshes currently
+    # TODO: include volume calculation in the filename
 
 # bpy.ops.mesh.subdivide(number_cuts=3)
 # alternative method
