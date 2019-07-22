@@ -18,6 +18,7 @@ def create_hull():
     copy.name = "%s (convex hull)" % ob.name
     copy.data = ch
     scene.objects.link(copy)
+    # bpy.ops.outliner.object_operation(TYPE="DESELECT")
     return copy, ob
     
 def remesh(obj, original):
@@ -41,16 +42,25 @@ def remesh(obj, original):
     smoother.factor = 0.9
     smoother.iterations = 30
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Smooth")
+    return obj
 
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
     bpy.ops.importgis.shapefile(filepath=shp)
     convex_hull, original = create_hull()
-    remesh(convex_hull, original)
-    bpy.ops.export_mesh.stl(filepath=base_dir + bpy.context.scene.objects.active.name + '-TEST.stl')
+    # remesh(convex_hull, original)
+    obj = remesh(convex_hull, original)
+    print('name' + obj.name)
+    bpy.context.scene.objects.active = obj
+    # print(bpy.ops.mesh.print3d_scale_to_volume().volume)
+    # bpy.ops.export_mesh.stl(filepath=base_dir + bpy.context.scene.objects.active.name + '-TEST.stl')
+    bpy.ops.export_mesh.stl(filepath=base_dir + obj.name + '-TEST.stl', use_selection=True)
+    
+    
     # TODO: target individual meshes. not selecting single meshes currently
     # TODO: include volume calculation in the filename
+    # TODO: May need to do something regarding multipatches?
 
 # bpy.ops.mesh.subdivide(number_cuts=3)
 # alternative method
