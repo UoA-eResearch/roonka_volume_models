@@ -55,8 +55,6 @@ def singular_select(ob):
             print('deselecting: %s' % ob.name)
             ob.select = False
 
-
-
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
@@ -69,9 +67,6 @@ for shp in shapefiles:
     
     # print(bpy.ops.mesh.print3d_scale_to_volume().volume)
     bpy.ops.export_mesh.stl(filepath=base_dir + obj.name + '-TEST.stl', use_selection=True)
-    
-    
-    # TODO: target individual meshes. not selecting single meshes currently
     # TODO: include volume calculation in the filename
     # TODO: May need to do something regarding multipatches?
 
