@@ -15,7 +15,7 @@ def create_hull():
     ch = bpy.data.meshes.new("%s convexhull" % me.name)
     bmesh.ops.convex_hull(bm, input=bm.verts)
     bm.to_mesh(ch)
-    copy.name = "%s (convex hull)" % ob.name
+    copy.name = "%s (hull)" % ob.name
     copy.data = ch
     scene.objects.link(copy)
     # bpy.ops.outliner.object_operation(TYPE="DESELECT")
@@ -55,6 +55,15 @@ def singular_select(ob):
             print('deselecting: %s' % ob.name)
             ob.select = False
 
+def get_object_volume(obj):
+    ''' Returns the volume of the object '''
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    return bm.calc_volume()
+    
+def create_output_file_name(base_dir, object):
+    return base_dir + object.name + '_volume_' + str(round(get_object_volume(object), 3))
+
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
@@ -64,11 +73,15 @@ for shp in shapefiles:
     obj = remesh(convex_hull, original)
 
     singular_select(obj)
-    
+        
     # print(bpy.ops.mesh.print3d_scale_to_volume().volume)
-    bpy.ops.export_mesh.stl(filepath=base_dir + obj.name + '-TEST.stl', use_selection=True)
+    # bpy.ops.export_mesh.stl(filepath=base_dir + obj.name + '-TEST.stl', use_selection=True)
+    bpy.ops.export_mesh.stl(filepath=create_output_file_name(base_dir, obj), use_selection=True)
+
     # TODO: include volume calculation in the filename
     # TODO: May need to do something regarding multipatches?
+
+    # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
 
 # bpy.ops.mesh.subdivide(number_cuts=3)
 # alternative method
