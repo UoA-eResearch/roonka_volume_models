@@ -44,6 +44,19 @@ def remesh(obj, original):
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Smooth")
     return obj
 
+def singular_select(ob):
+    ''' deselects all except the matching object '''
+    bpy.context.scene.objects.active = obj
+    selected_objects = bpy.context.selected_objects
+    for ob in selected_objects:
+        if ob == obj:
+            ob.select = True
+        else:
+            print('deselecting: %s' % ob.name)
+            ob.select = False
+
+
+
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
@@ -51,10 +64,10 @@ for shp in shapefiles:
     convex_hull, original = create_hull()
     # remesh(convex_hull, original)
     obj = remesh(convex_hull, original)
-    print('name' + obj.name)
-    bpy.context.scene.objects.active = obj
+
+    singular_select(obj)
+    
     # print(bpy.ops.mesh.print3d_scale_to_volume().volume)
-    # bpy.ops.export_mesh.stl(filepath=base_dir + bpy.context.scene.objects.active.name + '-TEST.stl')
     bpy.ops.export_mesh.stl(filepath=base_dir + obj.name + '-TEST.stl', use_selection=True)
     
     
