@@ -69,22 +69,8 @@ shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
     bpy.ops.importgis.shapefile(filepath=shp)
     convex_hull, original = create_hull()
-    # remesh(convex_hull, original)
     obj = remesh(convex_hull, original)
-
     singular_select(obj)
-        
-    # print(bpy.ops.mesh.print3d_scale_to_volume().volume)
-    # bpy.ops.export_mesh.stl(filepath=base_dir + obj.name + '-TEST.stl', use_selection=True)
     bpy.ops.export_mesh.stl(filepath=create_output_file_name(base_dir, obj), use_selection=True)
-
-    # TODO: include volume calculation in the filename
     # TODO: May need to do something regarding multipatches?
-
     # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
-
-# bpy.ops.mesh.subdivide(number_cuts=3)
-# alternative method
-# remesh up with increased octo-tree (around 8+), apply, shrinkwrap + apply -> smooth in various ways but most importantly using regular smooth, high repititions, factor that seemed to work nicely was /0.8
-# tl;dr: remesh(octo=8, type=smooth) -> shrinkwrap(mode=surface) -> smooth(factor=0.8, repeat=30-100)
-#sometimes smooth way more than that even
