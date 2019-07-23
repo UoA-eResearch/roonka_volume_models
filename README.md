@@ -17,3 +17,11 @@
 * create a cube, remesh, have it encapsulate the target shape, shrinkwrap. Doing so creates a different output due to the way the remeshing creates vertices.
 * Josh asked if stepping could be removed. Using nearest vertex shrinkwrapping could be a potential solution.
 
+### pros and cons to continuous lines
+
+* pro - doesn't have the stepped appearance
+* consideration - if using convex hull the volumes calculated for irregular inputs might be a lot different.
+* consideration - if using nearest vertex shrinkwrap the volumes will be less altered by irregularities but still probably more than the stepped version. 
+* con - might lead to different volume calculation (potentially smaller volumes)
+
+
