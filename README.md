@@ -3,6 +3,7 @@
 ## todo
 - [ ] refactor modifier additions
 - [ ] convert to filetype suitable for use
+- [ ] investigate removing erosion or large protusions e.g. in F142 vs F142b
 
 ## original approach
 * bpy.ops.mesh.subdivide(number_cuts=3)
