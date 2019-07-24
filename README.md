@@ -16,6 +16,7 @@
 
 * create a cube, remesh, have it encapsulate the target shape, shrinkwrap. Doing so creates a different output due to the way the remeshing creates vertices.
 * Josh asked if stepping could be removed. Using nearest vertex shrinkwrapping could be a potential solution.
+* shrinkwrapping using project in both negative and positive passes of the z-axis. This is probably more suitable for Roonka in particular.
 
 ### pros and cons to continuous lines
 
