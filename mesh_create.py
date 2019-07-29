@@ -4,7 +4,6 @@ import bmesh
 from mathutils import Vector, Matrix
 
 
-
 def create_hull():
     # CONVERTS TO CONVEX HULL
     context = bpy.context
@@ -37,7 +36,7 @@ def remesh(obj, original):
     # TODO: separate into separate function
     shrinker = obj.modifiers.new(name="Shrinkwrap", type="SHRINKWRAP")
     shrinker.target = bpy.data.objects[original.name]
-    shrinker.wrap_method = 
+    shrinker.wrap_method = 'NEAREST_VERTEX'
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Shrinkwrap")
 
     # TODO: separate into separate function
