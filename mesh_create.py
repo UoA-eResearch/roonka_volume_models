@@ -22,8 +22,8 @@ def create_hull():
     # bpy.ops.outliner.object_operation(TYPE="DESELECT")
     return copy, ob
     
-def remesh(obj, original):
-    ''' remeshes a convex hull with smoothing settings to around 8 octotree '''
+def remesh(obj, original, shrink_method):
+    ''' Remeshes to higher resolution, shrinks and smooths then returns the result. '''
     bpy.context.scene.objects.active = obj
 
     # TODO: separate into separate function
@@ -36,26 +36,27 @@ def remesh(obj, original):
     # TODO: separate into separate function
     shrinker = obj.modifiers.new(name="Shrinkwrap", type="SHRINKWRAP")
     shrinker.target = bpy.data.objects[original.name]
-    shrinker.wrap_method = 'NEAREST_VERTEX'
+    # shrinker.wrap_method = 'NEAREST_VERTEX'
+    shrinker.wrap_method = shrink_method
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Shrinkwrap")
 
     # TODO: separate into separate function
     smoother = obj.modifiers.new(name="Smooth", type="SMOOTH")
     smoother.factor = 0.9
-    smoother.iterations = 30
+    smoother.iterations = 40
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Smooth")
     return obj
 
-def singular_select(ob):
+def singular_select(target_object):
     ''' deselects all except the matching object '''
-    bpy.context.scene.objects.active = obj
+    # bpy.context.scene.objects.active = obj
     selected_objects = bpy.context.selected_objects
-    for ob in selected_objects:
-        if ob == obj:
-            ob.select = True
+    for obj in selected_objects:
+        if target_object == obj:
+            target_object.select = True
         else:
-            print('deselecting: %s' % ob.name)
-            ob.select = False
+            print('deselecting: %s' % obj.name)
+            obj.select = False
 
 def get_object_volume(obj):
     ''' Returns the volume of the object '''
@@ -63,16 +64,39 @@ def get_object_volume(obj):
     bm.from_mesh(obj.data)
     return bm.calc_volume()
     
-def create_output_file_name(base_dir, object):
-    return base_dir + object.name + '_volume_' + str(round(get_object_volume(object), 3))
+def create_output_file_name(base_dir, object, shrink_type, smooth_iterations, file_type='dae'):
+    volume_str = str(round(get_object_volume(object), 3))
+    file_name = '{}{}_shrink-type-{}_smooth_iterations-{}_volume-{}.{}'.format(base_dir, object.name, shrink_type, smooth_iterations, volume_str, file_type)
+    return file_name
+
+def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smooth_iterations=30, file_type='dae'):
+    ''' 
+    Imports the file into blender, creates convex hull, remeshes 
+    and shrinks in specified way, then exports newly shrunk model 
+    as the specified file type. 
+    '''
+    bpy.ops.importgis.shapefile(filepath=shp)
+    convex_hull, original = create_hull()
+    obj = remesh(convex_hull, original, shrink_method)
+    singular_select(obj)
+    output_path = create_output_file_name(base_dir, obj, shrink_method, smooth_iterations, file_type)
+    if file_type == 'stl':
+        bpy.ops.export_mesh.stl(filepath=output_path, use_selection=True)
+    if file_type == 'dae':
+        bpy.ops.wm.collada_export(filepath=output_path, selected=True)
 
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
-    bpy.ops.importgis.shapefile(filepath=shp)
-    convex_hull, original = create_hull()
-    obj = remesh(convex_hull, original)
-    singular_select(obj)
-    bpy.ops.export_mesh.stl(filepath=create_output_file_name(base_dir, obj), use_selection=True)
+    generate_volume_model_file(shp)
+    generate_volume_model_file(shp, 'NEAREST_SURFACEPOINT')
+
+    # bpy.ops.importgis.shapefile(filepath=shp)
+    # convex_hull, original = create_hull()
+    # obj = remesh(convex_hull, original, 'NEAREST_VERTEX')
+    # singular_select(obj)
+    # bpy.ops.export_mesh.stl(filepath=create_output_file_name(base_dir, obj), use_selection=True)
+
+    # bpy.ops.export_mesh.obj(filepath=create_output_file_name(base_dir, obj), use_selection=True)
     # TODO: May need to do something regarding multipatches?
     # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
