@@ -39,5 +39,5 @@
 
 - pro - doesn't have the stepped appearance
 - consideration - if using convex hull the volumes calculated for irregular inputs might be a lot different.
-- consideration - if using nearest vertex shrinkwrap the volumes will be less altered by irregularities but still probably more than the stepped version. 
+- consideration - if using nearest vertex shrinkwrap the volumes will be less altered by irregularities but still probably more than the stepped version.
 - con - might lead to different volume calculation (potentially smaller volumes)
