@@ -97,6 +97,10 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
 
 # main 
 delete = True
+
+# change this line to match the folder path where all the .shp files are on your PC.
+# The directory needs to include all the files related to the .shp file.
+
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
