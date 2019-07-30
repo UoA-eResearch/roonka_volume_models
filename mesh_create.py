@@ -69,14 +69,22 @@ def create_output_file_name(base_dir, object, shrink_type, smooth_iterations, fi
     file_name = '{}{}_shrink-type-{}_smooth_iterations-{}_volume-{}.{}'.format(base_dir, object.name, shrink_type, smooth_iterations, volume_str, file_type)
     return file_name
 
-def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smooth_iterations=30, file_type='dae'):
+def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smooth_iterations=30, file_type='dae', delete=False):
     ''' 
     Imports the file into blender, creates convex hull, remeshes 
     and shrinks in specified way, then exports newly shrunk model 
     as the specified file type. 
     '''
+    def _delete_original_and_hull():
+        ''' deletes original model and hull '''
+        original.select=True
+        bpy.ops.object.delete(use_global=False)
+        obj.select=True
+        bpy.ops.object.delete(use_global=False)
+
     bpy.ops.importgis.shapefile(filepath=shp)
     convex_hull, original = create_hull()
+    convex_hull.name = '{}_{}'.format(convex_hull.name, shrink_method)
     obj = remesh(convex_hull, original, shrink_method)
     singular_select(obj)
     output_path = create_output_file_name(base_dir, obj, shrink_method, smooth_iterations, file_type)
@@ -84,19 +92,15 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
         bpy.ops.export_mesh.stl(filepath=output_path, use_selection=True)
     if file_type == 'dae':
         bpy.ops.wm.collada_export(filepath=output_path, selected=True)
+    if delete:
+        _delete_original_and_hull()
 
+# main 
+delete = True
 base_dir = '/home/warrick/Desktop/roonka_features/'
 shapefiles = glob.glob(base_dir + '*.shp')
 for shp in shapefiles:
-    generate_volume_model_file(shp)
-    generate_volume_model_file(shp, 'NEAREST_SURFACEPOINT')
-
-    # bpy.ops.importgis.shapefile(filepath=shp)
-    # convex_hull, original = create_hull()
-    # obj = remesh(convex_hull, original, 'NEAREST_VERTEX')
-    # singular_select(obj)
-    # bpy.ops.export_mesh.stl(filepath=create_output_file_name(base_dir, obj), use_selection=True)
-
-    # bpy.ops.export_mesh.obj(filepath=create_output_file_name(base_dir, obj), use_selection=True)
+    generate_volume_model_file(shape_file=shp, delete=delete)
+    generate_volume_model_file(shape_file=shp, shrink_method='NEAREST_SURFACEPOINT', delete=delete)
     # TODO: May need to do something regarding multipatches?
     # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
