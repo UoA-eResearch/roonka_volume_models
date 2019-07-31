@@ -18,13 +18,14 @@ def create_hull():
     bm.to_mesh(ch)
     copy.name = "%s (hull)" % ob.name
     copy.data = ch
-    scene.objects.link(copy)
+    scene.collection.objects.link(copy)
     # bpy.ops.outliner.object_operation(TYPE="DESELECT")
     return copy, ob
     
 def remesh(obj, original, shrink_method):
     ''' Remeshes to higher resolution, shrinks and smooths then returns the result. '''
-    bpy.context.scene.objects.active = obj
+    # bpy.context.collection.objects.active = obj
+    obj.select_set(state=True)
 
     # TODO: separate into separate function
     remesher = obj.modifiers.new(name="Remesh", type="REMESH")
@@ -53,10 +54,11 @@ def singular_select(target_object):
     selected_objects = bpy.context.selected_objects
     for obj in selected_objects:
         if target_object == obj:
-            target_object.select = True
+            # target_object.select = True
+            obj.select_set(state=True) # = False
         else:
             print('deselecting: %s' % obj.name)
-            obj.select = False
+            obj.select_set(state=False) # = False
 
 def get_object_volume(obj):
     ''' Returns the volume of the object '''
@@ -77,14 +79,11 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
     '''
     def _delete_original_and_hull():
         ''' deletes original model and hull '''
-        original.select=True
-        bpy.ops.object.delete(use_global=False)
-        obj.select=True
+        original.select_set(state=True)
         bpy.ops.object.delete(use_global=False)
 
     bpy.ops.importgis.shapefile(filepath=shp)
     convex_hull, original = create_hull()
-    convex_hull.name = '{}_{}'.format(convex_hull.name, shrink_method)
     obj = remesh(convex_hull, original, shrink_method)
     singular_select(obj)
     output_path = create_output_file_name(base_dir, obj, shrink_method, smooth_iterations, file_type)
