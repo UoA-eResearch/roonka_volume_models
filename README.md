@@ -2,7 +2,7 @@
 
 ## How to use
 
-### Pre-requisites
+### Prerequisites
 
 Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
