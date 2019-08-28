@@ -3,6 +3,9 @@ import bpy
 import bmesh
 from mathutils import Vector, Matrix
 
+# configurable settings
+delete_after_export = False
+octree_depth = 7
 
 def create_hull():
     # CONVERTS TO CONVEX HULL
@@ -28,7 +31,7 @@ def remesh(obj, original, shrink_method):
 
     # TODO: separate into separate function
     remesher = obj.modifiers.new(name="Remesh", type="REMESH")
-    remesher.octree_depth = 6
+    remesher.octree_depth = octree_depth
     remesher.mode = "SMOOTH"
     remesher.use_smooth_shade = True
     bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Remesh")
@@ -95,15 +98,13 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
     if delete:
         _delete_original_and_hull()
 
-# main 
-delete = True
-
-# change the 'base_dir' line quotes to match the folder path where all the .shp files are on your PC.
-# The directory needs to include all the files related to the .shp file.
-base_dir = '/home/warrick/Desktop/roonka_features/'
-shapefiles = glob.glob(base_dir + '*.shp')
-for shp in shapefiles:
-    generate_volume_model_file(shape_file=shp, delete=delete)
-    generate_volume_model_file(shape_file=shp, shrink_method='NEAREST_SURFACEPOINT', delete=delete)
-    # TODO: May need to do something regarding multipatches?
-    # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
+if __name__ == '__main__':
+    # change the 'base_dir' line quotes to match the folder path where all the .shp files are on your PC.
+    # The directory needs to include all the files related to the .shp file.
+    base_dir = '/home/warrick/Desktop/roonka_features/'
+    shapefiles = glob.glob(base_dir + '*.shp')
+    for shp in shapefiles:
+        generate_volume_model_file(shape_file=shp, delete=delete_after_export)
+        generate_volume_model_file(shape_file=shp, shrink_method='NEAREST_SURFACEPOINT', delete=delete_after_export)
+        # TODO: May need to do something regarding multipatches?
+        # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
