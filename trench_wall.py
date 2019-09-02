@@ -21,7 +21,9 @@ def obj_mode():
     bpy.ops.object.mode_set(mode='OBJECT')
 
 def create_bounding_box():
-        # just make a cube of min -> max values on every axis.
+    # just make a cube of min -> max values on every axis.
+    # TODO: quite easy to sort scaling because cube scale = 1 unit either direction.
+    # e.g. 15 on x axis covers -15, 15. Just sort by math.abs(vert.co.x, y, and z then do accordingly)
     print("run")
     obj = bpy.context.object
     me = bpy.context.object.data
