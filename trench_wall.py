@@ -4,26 +4,33 @@ import bmesh
 from mathutils import Vector, Matrix
 from itertools import groupby
 
+resolution = 1
+
+
 def vertex_sort(t):
     return t.co.z
+
 
 def load_trench():
     base_dir = '/home/warrick/Desktop/trench_wall/'
     paths = glob.glob(base_dir + '*.shp')
     for shape_path in paths:
         bpy.ops.importgis.shapefile(filepath=shape_path)
-        
+
 
 def edit_mode():
     bpy.ops.object.mode_set(mode='EDIT')
 
+
 def obj_mode():
     bpy.ops.object.mode_set(mode='OBJECT')
 
+
+def get_active():
+    return bpy.context.active_object
+
+
 def create_bounding_box():
-    # just make a cube of min -> max values on every axis.
-    # TODO: quite easy to sort scaling because cube scale = 1 unit either direction.
-    # e.g. 15 on x axis covers -15, 15. Just sort by math.abs(vert.co.x, y, and z then do accordingly)
     print("creating bounding box")
     obj = bpy.context.object
     me = bpy.context.object.data
@@ -32,23 +39,44 @@ def create_bounding_box():
     bm.faces.ensure_lookup_table()
     bm.verts.ensure_lookup_table()
     bounding_box_center = obj.location
-    
+
     # TODO: refactor into singular function
     max_x_position = sorted(bm.verts, reverse=True, key=lambda v: abs(v.co.x))
-    max_x = abs(max_x_position[0].co.x)
-
     max_y_position = sorted(bm.verts, reverse=True, key=lambda v: abs(v.co.y))
-    max_y = abs(max_y_position[0].co.y)
-
     max_z_position = sorted(bm.verts, reverse=True, key=lambda v: abs(v.co.z))
-    max_z = abs(max_z_position[0].co.z)
+
+    max_x = round(abs(max_x_position[0].co.x))
+    max_y = round(abs(max_y_position[0].co.y))
+    max_z = round(abs(max_z_position[0].co.z))
+
     obj_mode()
-    
+
     bpy.ops.mesh.primitive_cube_add(location=bounding_box_center)
     bpy.context.scene.objects.active.scale = (max_x, max_y, max_z)
+    bounding_box = bpy.context.active_object
+    bounding_box.name = 'bounding_box'
+    return bounding_box
 
+
+def populate_rectangles(bounds):
+
+    def _calculate_axis_iterations(increment, scale):
+        print(increment, scale)
+        return scale / increment
+
+    print('populate rects')
+    # TODO: slice up the bounding box and create cubes. Check if vertices is within the cube. If it is, then keep it. If else, destroy it.
+    #resolution
+    # box is centered on the volume and scale is uniform, therefore uniform both ways.
+    increment = 1
+    x_iters = _calculate_axis_iterations(increment, bounds.scale.x)
+    y_iters = _calculate_axis_iterations(increment, bounds.scale.y)
+    z_iters = _calculate_axis_iterations(increment, bounds.scale.z)
+    print(z_iters)
+    # x coords
     
-    
+    # y coords
+    # z coords
 
 def bridge_all_loops():
     me = bpy.context.object.data
@@ -69,5 +97,7 @@ def bridge_all_loops():
 # load_trench()
 # bridge_all_loops()
 
-create_bounding_box()
+box = create_bounding_box()
+populate_rectangles(box)
+
 
