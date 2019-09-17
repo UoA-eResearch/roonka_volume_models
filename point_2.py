@@ -36,14 +36,15 @@ def get_min_vert(vertices, axis, reverse=True):
 
 select('Cube')
 verts = active_obj.data.vertices
-min_x = get_min_vert(verts, 'x')
-max_x = get_max_vert(verts, 'x')
+box_location = active_obj.location
+min_x = get_min_vert(verts, 'x') + box_location
+max_x = get_max_vert(verts, 'x') + box_location
 
-min_y = get_min_vert(verts, 'y')
-max_y = get_max_vert(verts, 'y')
+min_y = get_min_vert(verts, 'y') + box_location
+max_y = get_max_vert(verts, 'y') + box_location
 
-min_z = get_min_vert(verts, 'z')
-max_z = get_max_vert(verts, 'z')
+min_z = get_min_vert(verts, 'z') + box_location
+max_z = get_max_vert(verts, 'z') + box_location
 
 print(min_x, max_x)
 print(min_y, max_y)
