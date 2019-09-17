@@ -4,6 +4,8 @@ import bmesh
 from mathutils import Vector, Matrix
 from itertools import groupby
 
+from helpers import edit_mode, obj_mode, get_active
+
 resolution = 1
 
 
@@ -16,19 +18,6 @@ def load_trench():
     paths = glob.glob(base_dir + '*.shp')
     for shape_path in paths:
         bpy.ops.importgis.shapefile(filepath=shape_path)
-
-
-def edit_mode():
-    bpy.ops.object.mode_set(mode='EDIT')
-
-
-def obj_mode():
-    bpy.ops.object.mode_set(mode='OBJECT')
-
-
-def get_active():
-    return bpy.context.active_object
-
 
 def create_bounding_box():
     print("creating bounding box")
