@@ -49,10 +49,11 @@ def within_bounds():
     print('check if point within the bounding box')
 
 
-select('F127.001 (hull)_NEAREST_SURFACEPOINT')
-active_obj = objects['F127.001 (hull)_NEAREST_SURFACEPOINT']
+# select('F127.001 (hull)_NEAREST_SURFACEPOINT')
+# active_obj = objects['F127.001 (hull)_NEAREST_SURFACEPOINT']
+
 verts = active_obj.data.vertices
-cube = active_obj
+volume_obj = active_obj
 box_location = active_obj.location
 min_x = get_min_vert(verts, 'x') + box_location
 max_x = get_max_vert(verts, 'x') + box_location
@@ -73,7 +74,6 @@ deselect('F127.001 (hull)_NEAREST_SURFACEPOINT')
 def brek():
     print(10/0)
 
-
 def is_inside(ray_origin, ray_destination, obj):
     mat = obj.matrix_local.inverted()
     f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
@@ -90,7 +90,6 @@ def is_inside(ray_origin, ray_destination, obj):
 
     i = 1
     while (face_idx != -1):
-
         loc = loc.lerp(direction, amount)    
         f = obj.ray_cast(mat * loc, mat * ray_destination)
         result, loc, normal, face_idx = f
@@ -113,7 +112,7 @@ for vert in art_verts:
     start_pos = art_offset + vert.co
     end_pos = start_pos + Vector([0, 0, 100])
     direction = (end_pos - start_pos)
-    if is_inside(start_pos, end_pos, cube):
+    if is_inside(start_pos, end_pos, volume_obj):
         count = count + 1
         bpy.ops.mesh.primitive_cube_add(location=vert.co + art_offset, radius=0.001)
 
