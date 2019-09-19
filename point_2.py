@@ -3,88 +3,25 @@ import glob
 import bpy
 import bmesh
 from mathutils import Vector, Matrix
-
 from math import pi, acos
-
 
 def edit_mode():
         bpy.ops.object.mode_set(mode='EDIT')
 
-
 def ob_mode():
         bpy.ops.object.mode_set(mode='OBJECT')
-
 
 def select(obj_name):
     objects[obj_name].select = True
 
-
 def deselect(obj_name):
     objects[obj_name].select = False
-
-
-def get_max_vert(vertices, axis):
-    ''' returns max vertex from a list of vertices'''
-    axis_idx = {
-        'x': 0,
-        'y': 1,
-        'z': 2,
-    }
-    return sorted(vertices, reverse=True, key=lambda v: abs(v.co[axis_idx[axis]]))[0].co
-
-
-def get_min_vert(vertices, axis, reverse=True):
-    ''' returns max vertex from a list of vertices'''
-    axis_idx = {
-        'x': 0,
-        'y': 1,
-        'z': 2,
-    }
-    return sorted(vertices, reverse=True, key=lambda v: abs(v.co[axis_idx[axis]]))[len(vertices) - 1].co
-
-
-def within_bounds():
-    print('check if point within the bounding box')
-
-data = bpy.data
-objects = data.objects
-active_obj = bpy.context.scene.objects.active
-
-# select('F127.001 (hull)_NEAREST_SURFACEPOINT')
-# active_obj = objects['F127.001 (hull)_NEAREST_SURFACEPOINT']
-
-'''
-
-verts = active_obj.data.vertices
-volume_obj = active_obj
-box_location = active_obj.location
-min_x = get_min_vert(verts, 'x') + box_location
-max_x = get_max_vert(verts, 'x') + box_location
-
-min_y = get_min_vert(verts, 'y') + box_location
-max_y = get_max_vert(verts, 'y') + box_location
-
-min_z = get_min_vert(verts, 'z') + box_location
-max_z = get_max_vert(verts, 'z') + box_location
-
-print(min_x, max_x)
-print(min_y, max_y)
-print(min_z, max_z)
-'''
-
-# deselect('F127.001 (hull)_NEAREST_SURFACEPOINT')
-volume_obj = active_obj
-deselect(active_obj.name)
-
 
 def brek():
     print(10/0)
 
 def is_inside(ray_origin, ray_destination, obj):
-    print(ray_origin, ray_destination, obj)
-
-    # brek()
-
+    # print(ray_origin, ray_destination, obj)
     mat = obj.matrix_local.inverted()
     f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
     result, loc, normal, face_idx = f
@@ -113,26 +50,6 @@ def is_inside(ray_origin, ray_destination, obj):
 
     return not ((i % 2) == 0)
 
-# artefacts now active
-active_obj = objects['Artefacts']
-art_offset = active_obj.location
-# select('Artefacts')
-art_verts = active_obj.data.vertices
-count =0
-
-
-# for vert in art_verts:
-#     start_pos = art_offset + vert.co
-#     end_pos = start_pos + Vector([0, 0, 100])
-#     direction = (end_pos - start_pos)
-#     if is_inside(start_pos, end_pos, volume_obj):
-#         count = count + 1
-#         bpy.ops.mesh.primitive_cube_add(location=vert.co + art_offset, radius=0.001)
-
-
-# TODO: iterate all separated artefact points and select based on is_inside():
-
-
 def is_inside2(target_pt_global, mesh_obj, tolerance=0.11):
     '''
     Method using comparing of outward facing mesh normal with vertex point.
@@ -150,6 +67,17 @@ def is_inside2(target_pt_global, mesh_obj, tolerance=0.11):
     # Allow for some rounding error
     inside = angle < 90-tolerance
     return inside
+
+data = bpy.data
+objects = data.objects
+active_obj = bpy.context.scene.objects.active
+volume_obj = active_obj
+deselect(active_obj.name)
+
+active_obj = objects['Artefacts']
+art_offset = active_obj.location
+art_verts = active_obj.data.vertices
+count =0
 
 for ob in objects:
     if ob.name.startswith('Artefacts'):
