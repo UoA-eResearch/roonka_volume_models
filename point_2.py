@@ -81,7 +81,6 @@ count =0
 
 for ob in objects:
     if ob.name.startswith('Artefacts'):
-        # print(ob.name)
         start_pos = ob.location
         end_pos = start_pos + Vector([0, 0, 1000])
         if is_inside2(ob.location, volume_obj):
