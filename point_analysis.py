@@ -3,73 +3,87 @@ import glob
 import bpy
 import bmesh
 from mathutils import Vector, Matrix
+from math import pi, acos
 
-# from helpers import edit_mode
 
-def get_bounding_sphere_radius(center_pos):
-    ''' returns the radius of bounding sphere '''
-    # center_pos = bm.select_history.active.location
-    print(center_pos)
-    verts = [v for v in bm.verts if v.select]
-    verts.sort(key=lambda v:(center_pos - v.co).length)
-    farthest_vert = verts[0]
-    # distance between verts
-    print((farthest_vert.co - center_pos).length)
-    farthest_dist = (farthest_vert.co - center_pos).length
-    # distance disregarding local z component
-    # print((farthest_vert.co.xy - center_pos.xy).length)
-    return farthest_dist
+def edit_mode():
+        bpy.ops.object.mode_set(mode='EDIT')
 
-def get_max_vertex(vertices, axis, reverse=True):
-    ''' returns max vertex from a list of vertices'''
-    axis_idx = {
-        'x': 0,
-        'y': 1,
-        'z': 2,
-    }
-    return sorted(vertices, reverse=reverse, key=lambda v: abs(v.co[axis_idx[axis]]))[0].co
+def ob_mode():
+        bpy.ops.object.mode_set(mode='OBJECT')
 
-def cull_vertices_outside_bounding_box(obj, vertices):
-    print(obj.name)
-    max_x = get_max_vertex(obj.data.vertices, 'x')
-    min_x = get_max_vertex(obj.data.vertices, 'x', reverse=False)
-    max_y = get_max_vertex(obj.data.vertices, 'y')
-    max_z = get_max_vertex(obj.data.vertices, 'z')
-    print(max_x, min_x, max_y, max_z)
+def select(obj_name):
+    objects[obj_name].select = True
 
-def process_active_obj_verts(artefacts):
-    bpy.ops.object.mode_set(mode = 'EDIT')
-    mesh = artefacts.data
-    print(artefacts.name)
-    under = 0
-    over = 0
-    in_verts = []
-    for vert in mesh.vertices:
-        euclidean_dist = (vert.co - feature_center_location).length
-        if (euclidean_dist < bounding_sphere_radius):
-            under = under + 1
-        else:
-            in_verts.append(vert)
-            over = over + 1
-    mesh.vertices.foreach_set("select", in_verts)
-    print(under, over)
-    
+def deselect(obj_name):
+    objects[obj_name].select = False
 
-# get volumes to analyse (anything startin with F I guess?)
-context = bpy.context
-scene = context.scene
-ob = context.object
-feature_center_location = ob.location 
-me = ob.data
-bm = bmesh.from_edit_mesh(me)
+def brek():
+    print(10/0)
 
-bounding_sphere_radius = get_bounding_sphere_radius(feature_center_location)
-print(bounding_sphere_radius)
+def is_inside_intersection_compare(ray_origin, ray_destination, obj):
+    ''' Returns if raycast from vertex intersects faces odd amount of times. Odd = inside, Even = outside '''
+    # print(ray_origin, ray_destination, obj)
+    mat = obj.matrix_local.inverted()
+    f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
+    result, loc, normal, face_idx = f
 
-bpy.ops.object.mode_set(mode = 'OBJECT')
+    if face_idx == -1:
+        return False
 
-artefacts = bpy.data.objects['Artefacts']
+    max_expected_intersections = 1000
+    fudge_distance = 0.0001
+    direction = (ray_destination - loc)
+    dir_len = direction.length
+    amount = fudge_distance / dir_len
 
-cull_vertices_outside_bounding_box(bpy.data.objects['Cube'], artefacts.data.vertices)
+    i = 1
+    while (face_idx != -1):
+        loc = loc.lerp(direction, amount)    
+        f = obj.ray_cast(mat * loc, mat * ray_destination)
+        result, loc, normal, face_idx = f
+        print(face_idx)
+        if face_idx == -1:
+            break
+        i += 1
+        if i > max_expected_intersections:
+            break
 
-# process_active_obj_verts(artefacts)
+    return not ((i % 2) == 0)
+
+def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
+    ''' Method using comparing of outward facing mesh normal with vertex point. '''
+    # Convert the point from global space to mesh local space
+    target_pt_local = mesh_obj.matrix_world.inverted() * target_pt_global
+    # Find the nearest point on the mesh and the nearest face normal
+    _, pt_closest, face_normal, _ = mesh_obj.closest_point_on_mesh(target_pt_local)
+    # Get the target-closest pt vector
+    target_closest_pt_vec = (pt_closest - target_pt_local).normalized()
+    # Compute the dot product = |a||b|*cos(angle)
+    dot_prod = target_closest_pt_vec.dot(face_normal)
+    # Get the angle between the normal and the target-closest-pt vector (from the dot prod)
+    angle = acos(min(max(dot_prod, -1), 1)) * 180 / pi
+    # Allow for some rounding error
+    inside = angle < 90-tolerance
+    return inside
+
+data = bpy.data
+objects = data.objects
+active_obj = bpy.context.scene.objects.active
+volume_obj = active_obj
+deselect(active_obj.name)
+
+active_obj = objects['Artefacts']
+art_offset = active_obj.location
+art_verts = active_obj.data.vertices
+count = 0
+
+for ob in objects:
+    if ob.name.startswith('Artefacts'):
+        start_pos = ob.location
+        end_pos = start_pos + Vector([0, 0, 1000])
+        if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
+            ob.select = True
+            count += 1
+            print(ob.name)
+print('count: {}'.format(count))
