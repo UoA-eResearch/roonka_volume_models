@@ -4,9 +4,7 @@ import bpy
 import bmesh
 from mathutils import Vector, Matrix
 
-data = bpy.data
-objects = data.objects
-active_obj = bpy.context.scene.objects.active
+
 
 
 def edit_mode():
@@ -48,9 +46,14 @@ def get_min_vert(vertices, axis, reverse=True):
 def within_bounds():
     print('check if point within the bounding box')
 
+data = bpy.data
+objects = data.objects
+active_obj = bpy.context.scene.objects.active
 
 # select('F127.001 (hull)_NEAREST_SURFACEPOINT')
 # active_obj = objects['F127.001 (hull)_NEAREST_SURFACEPOINT']
+
+'''
 
 verts = active_obj.data.vertices
 volume_obj = active_obj
@@ -67,14 +70,21 @@ max_z = get_max_vert(verts, 'z') + box_location
 print(min_x, max_x)
 print(min_y, max_y)
 print(min_z, max_z)
+'''
 
-deselect('F127.001 (hull)_NEAREST_SURFACEPOINT')
+# deselect('F127.001 (hull)_NEAREST_SURFACEPOINT')
+volume_obj = active_obj
+deselect(active_obj.name)
 
 
 def brek():
     print(10/0)
 
 def is_inside(ray_origin, ray_destination, obj):
+    print(ray_origin, ray_destination, obj)
+
+    # brek()
+
     mat = obj.matrix_local.inverted()
     f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
     result, loc, normal, face_idx = f
@@ -108,14 +118,27 @@ art_offset = active_obj.location
 select('Artefacts')
 art_verts = active_obj.data.vertices
 count =0
-for vert in art_verts:
-    start_pos = art_offset + vert.co
-    end_pos = start_pos + Vector([0, 0, 100])
-    direction = (end_pos - start_pos)
-    if is_inside(start_pos, end_pos, volume_obj):
-        count = count + 1
-        bpy.ops.mesh.primitive_cube_add(location=vert.co + art_offset, radius=0.001)
 
+# for vert in art_verts:
+#     start_pos = art_offset + vert.co
+#     end_pos = start_pos + Vector([0, 0, 100])
+#     direction = (end_pos - start_pos)
+#     if is_inside(start_pos, end_pos, volume_obj):
+#         count = count + 1
+#         bpy.ops.mesh.primitive_cube_add(location=vert.co + art_offset, radius=0.001)
+
+
+# TODO: iterate all separated artefact points and select based on is_inside():
+
+for ob in objects:
+    if ob.name.startswith('Artefacts'):
+        # print(ob.name)
+        start_pos = ob.location
+        end_pos = start_pos + Vector([0, 0, 100])
+        if is_inside(start_pos, end_pos, volume_obj):
+            ob.select = True
+            count += 1
+            print(ob.name)
 
 print('count: {}'.format(count))
 # edit_mode()
