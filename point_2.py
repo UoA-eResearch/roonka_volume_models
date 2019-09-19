@@ -21,7 +21,8 @@ def deselect(obj_name):
 def brek():
     print(10/0)
 
-def is_inside(ray_origin, ray_destination, obj):
+def is_inside_intersection_compare(ray_origin, ray_destination, obj):
+    ''' Returns if raycast from vertex intersects faces odd amount of times. Odd = inside, Even = outside '''
     # print(ray_origin, ray_destination, obj)
     mat = obj.matrix_local.inverted()
     f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
@@ -50,10 +51,8 @@ def is_inside(ray_origin, ray_destination, obj):
 
     return not ((i % 2) == 0)
 
-def is_inside2(target_pt_global, mesh_obj, tolerance=0.11):
-    '''
-    Method using comparing of outward facing mesh normal with vertex point.
-    '''
+def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
+    ''' Method using comparing of outward facing mesh normal with vertex point. '''
     # Convert the point from global space to mesh local space
     target_pt_local = mesh_obj.matrix_world.inverted() * target_pt_global
     # Find the nearest point on the mesh and the nearest face normal
@@ -83,10 +82,8 @@ for ob in objects:
     if ob.name.startswith('Artefacts'):
         start_pos = ob.location
         end_pos = start_pos + Vector([0, 0, 1000])
-        if is_inside(start_pos, end_pos, volume_obj) and is_inside2(ob.location, volume_obj):
+        if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
             ob.select = True
             count += 1
             print(ob.name)
-
 print('count: {}'.format(count))
-# edit_mode()
