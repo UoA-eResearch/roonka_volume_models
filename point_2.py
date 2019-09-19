@@ -32,7 +32,6 @@ def is_inside(ray_origin, ray_destination, obj):
 
     max_expected_intersections = 1000
     fudge_distance = 0.0001
-    fudge_distance = 3.1
     direction = (ray_destination - loc)
     dir_len = direction.length
     amount = fudge_distance / dir_len
