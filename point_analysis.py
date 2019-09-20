@@ -1,9 +1,12 @@
-
 import glob
 import bpy
 import bmesh
 from mathutils import Vector, Matrix
 from math import pi, acos
+
+# need to install fiona, shapely and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
+import fiona
+import shapely
 
 
 def edit_mode():
