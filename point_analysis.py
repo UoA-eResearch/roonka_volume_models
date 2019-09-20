@@ -6,7 +6,7 @@ from math import pi, acos
 
 # need to install fiona, shapely and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
 import fiona
-import shapely
+from shapely.geometry import mapping, Point, MultiPoint
 
 
 def edit_mode():
@@ -81,6 +81,8 @@ art_offset = active_obj.location
 art_verts = active_obj.data.vertices
 count = 0
 
+multipoint = []
+
 for ob in objects:
     if ob.name.startswith('Artefacts'):
         start_pos = ob.location
@@ -89,4 +91,25 @@ for ob in objects:
             ob.select = True
             count += 1
             print(ob.name)
+            multipoint.append(Point(ob.location))
+print(multipoint[0])
+print(len(multipoint))
 print('count: {}'.format(count))
+
+# writing to shapefile.
+schema = {
+    'geometry': 'MultiPoint',
+    'properties': {
+        # 'Artefact': 'int',
+        # 'DBL': 'float',
+        'id': 'int',
+        # 'layer': 'float',
+        # 'level': 'float',
+        # 'Type': 'float',
+    }
+}
+with fiona.open('./my_shp.shp', 'w', 'ESRI Shapefile', schema) as output:
+    output.write({
+        'geometry':'multipoint',
+        'properties': {'id': 12 },
+    })
