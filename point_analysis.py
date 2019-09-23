@@ -1,8 +1,12 @@
+import os 
 import glob
 import bpy
 import bmesh
+import pprint
+from collections import OrderedDict
 from mathutils import Vector, Matrix
 from math import pi, acos
+
 
 # need to install fiona, shapely and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
 import fiona
@@ -91,25 +95,55 @@ for ob in objects:
             ob.select = True
             count += 1
             print(ob.name)
-            multipoint.append(Point(ob.location))
-print(multipoint[0])
-print(len(multipoint))
+            # multipoint.append(Point(ob.location))
+            multipoint.append({
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': ob.location
+                },
+                'properties': OrderedDict([
+                    ('name', 'Eiffel Tower'),
+                    ('height', 300.01),
+                    ('view', 'scenic'),
+                    ('year', 1889)
+                ])
+            })
+# print(multipoint[0])
+# print(len(multipoint))
 print('count: {}'.format(count))
 
 # writing to shapefile.
-schema = {
+
+artefact_schema = {
     'geometry': 'MultiPoint',
-    'properties': {
-        # 'Artefact': 'int',
-        # 'DBL': 'float',
-        'id': 'int',
-        # 'layer': 'float',
-        # 'level': 'float',
-        # 'Type': 'float',
-    }
+    'properties': { 'id': 'int' }
 }
-with fiona.open('./my_shp.shp', 'w', 'ESRI Shapefile', schema) as output:
-    output.write({
-        'geometry':'multipoint',
-        'properties': {'id': 12 },
-    })
+
+landmarks_schema = {
+    'geometry': 'Point',
+    'properties': OrderedDict([
+        ('name', 'str'),
+        ('height', 'float'),
+        ('view', 'str'),
+        ('year', 'int')
+    ])
+}
+
+eiffel_tower = {
+    'geometry': {
+        'type': 'Point',
+        'coordinates': (448252, 5411935)
+    },
+    'properties': OrderedDict([
+        ('name', 'Eiffel Tower'),
+        ('height', 300.01),
+        ('view', 'scenic'),
+        ('year', 1889)
+    ])
+}
+
+print(os.getcwd())
+with fiona.open('./my_shp.shp', 'w', 'ESRI Shapefile', landmarks_schema) as c:
+    # c.write(eiffel_tower)
+    for point in multipoint:
+        c.write(point)
