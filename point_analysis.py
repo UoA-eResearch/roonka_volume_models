@@ -85,7 +85,7 @@ art_offset = active_obj.location
 art_verts = active_obj.data.vertices
 count = 0
 duplicates  = []
-obs = []
+inside_artefacts = []
 
 inside_artefacts = []
 for ob in objects:
@@ -96,24 +96,16 @@ for ob in objects:
             ob.select = True
             count += 1
             artefact_id = ob['Artefact']
-            obs.append(ob)
-            if artefact_id in inside_artefacts:
-                print(artefact_id)
-                duplicates.append(ob.name)
-            else:
-                inside_artefacts.append(artefact_id)
+            inside_artefacts.append(ob)
 # print(multipoint[0])
 # print(len(multipoint))
 print('count: {}'.format(count))
-print('duplicates', duplicates)
-print('art obs', obs)
-
+print('inside arts', len(inside_artefacts))
 
 # writing to shapefile.
 
 # for feat in fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp'):
 #     print(feat)
-
 with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
     source_schema = source.schema
     source_driver = source.driver
@@ -131,10 +123,19 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
         schema = source_schema
     ) as sh_output:
         written = 0
-        for ob in obs:
-            print(bpy.ops.geoscene.coords())
+
+        geoscene_origin_x = bpy.data.window_managers["WinMan"].crsx
+        geoscene_origin_y = bpy.data.window_managers["WinMan"].crsy
+        for ob in inside_artefacts:
             sh_output.write({
-                'geometry': bpy.ops.geoscene.coords(ob.location.x, ob.location.y, ob.location.z),
+                'geometry': {
+                    'type': 'Point',
+                    'coordinates': (
+                        ob.location.x + geoscene_origin_x,
+                        ob.location.y + geoscene_origin_y,
+                        ob.location.z
+                    ),
+                },
                 'properties': {
                     'Id': ob['Id'],
                     'Type': ob['Type'],
@@ -144,16 +145,24 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
                     'DBL': ob['DBL'],
                 }
             })
-        for feature in source:
-            # print(feature['Artefact'])
-            # pprint(feature['properties']['Artefact'])
-            if (feature['properties']['Artefact'] in inside_artefacts) :
-                written += 1
-                sh_output.write(feature)
-        print("written", written)
+
+        # for feature in source:
+        #     print(feature)
+        #     # print(feature['Artefact'])
+        #     # pprint(feature['properties']['Artefact'])
+        #     if (feature['properties']['Artefact'] in inside_artefacts) :
+        #         written += 1
+        #         sh_output.write(feature)
+        # print("written", written)
+
+
 # print(len(inside_artefacts))
 # print(inside_artefacts)
 
+# print(bpy.ops.geoscene.coords.poll())
+print(bpy.data.window_managers["WinMan"].displayOriginPrj)
+print(bpy.data.window_managers["WinMan"].crsx)
+print(bpy.data.window_managers["WinMan"].crsy)
 # TODO: find way to map source points to selected blender objects (so far artefact.id is error prone.)
 # TODO: Another possible solution is to continue on with writing a shapefile using the blender objects but instead of using x, y, z 
 # I can use BlenderGIS with whatever the current setting is and use the bpy.ops.geoscene.coords() method to get the right shapefile coordinates.    
