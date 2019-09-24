@@ -85,6 +85,7 @@ art_offset = active_obj.location
 art_verts = active_obj.data.vertices
 count = 0
 duplicates  = []
+obs = []
 
 inside_artefacts = []
 for ob in objects:
@@ -95,6 +96,7 @@ for ob in objects:
             ob.select = True
             count += 1
             artefact_id = ob['Artefact']
+            obs.append(ob)
             if artefact_id in inside_artefacts:
                 print(artefact_id)
                 duplicates.append(ob.name)
@@ -104,6 +106,8 @@ for ob in objects:
 # print(len(multipoint))
 print('count: {}'.format(count))
 print('duplicates', duplicates)
+print('art obs', obs)
+
 
 # writing to shapefile.
 
@@ -127,10 +131,23 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
         schema = source_schema
     ) as sh_output:
         written = 0
+        for ob in obs:
+            print(bpy.ops.geoscene.coords())
+            sh_output.write({
+                'geometry': bpy.ops.geoscene.coords(ob.location.x, ob.location.y, ob.location.z),
+                'properties': {
+                    'Id': ob['Id'],
+                    'Type': ob['Type'],
+                    'Artefact': ob['Artefact'],
+                    'Level': ob['Level'],
+                    'Layer': ob['Layer'],
+                    'DBL': ob['DBL'],
+                }
+            })
         for feature in source:
             # print(feature['Artefact'])
             # pprint(feature['properties']['Artefact'])
-            if (feature['properties']['Artefact'] in inside_artefacts):
+            if (feature['properties']['Artefact'] in inside_artefacts) :
                 written += 1
                 sh_output.write(feature)
         print("written", written)
@@ -140,3 +157,4 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
 # TODO: find way to map source points to selected blender objects (so far artefact.id is error prone.)
 # TODO: Another possible solution is to continue on with writing a shapefile using the blender objects but instead of using x, y, z 
 # I can use BlenderGIS with whatever the current setting is and use the bpy.ops.geoscene.coords() method to get the right shapefile coordinates.    
+# Look into proj/proj4 for reprojecting cartesian coordiantes
