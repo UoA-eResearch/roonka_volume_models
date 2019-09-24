@@ -84,6 +84,7 @@ active_obj = objects['Artefacts']
 art_offset = active_obj.location
 art_verts = active_obj.data.vertices
 count = 0
+duplicates  = []
 
 inside_artefacts = []
 for ob in objects:
@@ -93,51 +94,21 @@ for ob in objects:
         if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
             ob.select = True
             count += 1
-            print(ob.name)
-            print(ob['Level'])
-            inside_artefacts.append(int(ob['Artefact']))
-            # multipoint.append({
-            #     'geometry': {
-            #         'type': 'Point',
-            #         'coordinates': ob.location
-            #     },
-            #     'properties': OrderedDict([
-            #         ('Id', ob['Id']),
-            #         ('Artefact', ob['Artefact']),
-            #         ('Type', ob['Type']),
-            #         ('Level', ob['Level']),
-            #         ('Layer', ob['Layer']),
-            #         ('DBL', ob['DBL'])
-            #     ])
-            # })
-
+            artefact_id = ob['Artefact']
+            if artefact_id in inside_artefacts:
+                print(artefact_id)
+                duplicates.append(ob.name)
+            else:
+                inside_artefacts.append(artefact_id)
 # print(multipoint[0])
 # print(len(multipoint))
 print('count: {}'.format(count))
+print('duplicates', duplicates)
 
 # writing to shapefile.
-artefact_schema = {
-    'geometry': 'Point',
-    'properties': OrderedDict([
-        ('Id', 'float'),
-        ('Artefact', 'str'),
-        ('Type', 'str'),
-        ('Level', 'float'),
-        ('Layer', 'int'),
-        ('DBL', 'float')
-    ])
-}
 
-# TODO: potentially just note the artefact ids and iterate through the original file, only print the ones within the artefacts list to the filtered shapefile while keeping/using all the original shapefile metadata.
-
-# print(os.getcwd())
-# with fiona.open('./my_shp.shp', 'w', 'ESRI Shapefile', artefact_schema) as c:
-#     # c.write(eiffel_tower)
-#     for point in multipoint:
-        # c.write(point)
-
-for feat in fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp'):
-    print(feat)
+# for feat in fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp'):
+#     print(feat)
 
 with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
     source_schema = source.schema
@@ -164,5 +135,8 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
                 sh_output.write(feature)
         print("written", written)
 # print(len(inside_artefacts))
-print(count)
 # print(inside_artefacts)
+
+# TODO: find way to map source points to selected blender objects (so far artefact.id is error prone.)
+# TODO: Another possible solution is to continue on with writing a shapefile using the blender objects but instead of using x, y, z 
+# I can use BlenderGIS with whatever the current setting is and use the bpy.ops.geoscene.coords() method to get the right shapefile coordinates.    
