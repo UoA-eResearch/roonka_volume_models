@@ -2,7 +2,7 @@ import os
 import glob
 import bpy
 import bmesh
-import pprint
+from pprint import pprint
 from collections import OrderedDict
 from mathutils import Vector, Matrix
 from math import pi, acos
@@ -85,8 +85,7 @@ art_offset = active_obj.location
 art_verts = active_obj.data.vertices
 count = 0
 
-multipoint = []
-
+inside_artefacts = []
 for ob in objects:
     if ob.name.startswith('Artefacts'):
         start_pos = ob.location
@@ -95,55 +94,75 @@ for ob in objects:
             ob.select = True
             count += 1
             print(ob.name)
-            # multipoint.append(Point(ob.location))
-            multipoint.append({
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': ob.location
-                },
-                'properties': OrderedDict([
-                    ('name', 'Eiffel Tower'),
-                    ('height', 300.01),
-                    ('view', 'scenic'),
-                    ('year', 1889)
-                ])
-            })
+            print(ob['Level'])
+            inside_artefacts.append(int(ob['Artefact']))
+            # multipoint.append({
+            #     'geometry': {
+            #         'type': 'Point',
+            #         'coordinates': ob.location
+            #     },
+            #     'properties': OrderedDict([
+            #         ('Id', ob['Id']),
+            #         ('Artefact', ob['Artefact']),
+            #         ('Type', ob['Type']),
+            #         ('Level', ob['Level']),
+            #         ('Layer', ob['Layer']),
+            #         ('DBL', ob['DBL'])
+            #     ])
+            # })
+
 # print(multipoint[0])
 # print(len(multipoint))
 print('count: {}'.format(count))
 
 # writing to shapefile.
-
 artefact_schema = {
-    'geometry': 'MultiPoint',
-    'properties': { 'id': 'int' }
-}
-
-landmarks_schema = {
     'geometry': 'Point',
     'properties': OrderedDict([
-        ('name', 'str'),
-        ('height', 'float'),
-        ('view', 'str'),
-        ('year', 'int')
+        ('Id', 'float'),
+        ('Artefact', 'str'),
+        ('Type', 'str'),
+        ('Level', 'float'),
+        ('Layer', 'int'),
+        ('DBL', 'float')
     ])
 }
 
-eiffel_tower = {
-    'geometry': {
-        'type': 'Point',
-        'coordinates': (448252, 5411935)
-    },
-    'properties': OrderedDict([
-        ('name', 'Eiffel Tower'),
-        ('height', 300.01),
-        ('view', 'scenic'),
-        ('year', 1889)
-    ])
-}
+# TODO: potentially just note the artefact ids and iterate through the original file, only print the ones within the artefacts list to the filtered shapefile while keeping/using all the original shapefile metadata.
 
-print(os.getcwd())
-with fiona.open('./my_shp.shp', 'w', 'ESRI Shapefile', landmarks_schema) as c:
-    # c.write(eiffel_tower)
-    for point in multipoint:
-        c.write(point)
+# print(os.getcwd())
+# with fiona.open('./my_shp.shp', 'w', 'ESRI Shapefile', artefact_schema) as c:
+#     # c.write(eiffel_tower)
+#     for point in multipoint:
+        # c.write(point)
+
+for feat in fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp'):
+    print(feat)
+
+with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
+    source_schema = source.schema
+    source_driver = source.driver
+    source_crs = source.crs
+
+    print(source_schema) # attribute fields & geometry def as dict
+    print(source_driver) # "ESRI Shapefile"
+    print(source_crs) # coordinate system
+
+    with fiona.open(
+        './output.shp',
+        'w',
+        driver = source_driver,
+        crs = source_crs,
+        schema = source_schema
+    ) as sh_output:
+        written = 0
+        for feature in source:
+            # print(feature['Artefact'])
+            # pprint(feature['properties']['Artefact'])
+            if (feature['properties']['Artefact'] in inside_artefacts):
+                written += 1
+                sh_output.write(feature)
+        print("written", written)
+# print(len(inside_artefacts))
+print(count)
+# print(inside_artefacts)
