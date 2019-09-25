@@ -105,7 +105,8 @@ def write_to_shapefile(artefact_ids):
 
 
 def find_features_inside_volume():
-    ''' Returns list of Id properties from all objects starting with 'Artefact' in the scene.'''
+    ''' Returns list of Id properties from all objects within the active object and are starting with 'Artefact' in the scene.'''
+    # TODO: Refactor to remove this section from this function.
     active_obj = bpy.context.scene.objects.active
     volume_obj = active_obj
     deselect(active_obj.name)
@@ -113,6 +114,7 @@ def find_features_inside_volume():
     artefact_ids = []
     count = 0
     for ob in bpy.data.objects:
+        # TODO: Refactor to yield artefact objects as a separate function.
         if ob.name.startswith('Artefacts'):
             start_pos = ob.location
             end_pos = start_pos + Vector([0, 0, 1000])
