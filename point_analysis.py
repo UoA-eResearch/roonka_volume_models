@@ -1,4 +1,4 @@
-import os 
+import os
 import glob
 import bpy
 import bmesh
@@ -14,19 +14,24 @@ from shapely.geometry import mapping, Point, MultiPoint
 
 
 def edit_mode():
-        bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.object.mode_set(mode='EDIT')
+
 
 def ob_mode():
-        bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.mode_set(mode='OBJECT')
+
 
 def select(obj_name):
     objects[obj_name].select = True
 
+
 def deselect(obj_name):
     objects[obj_name].select = False
 
+
 def brek():
     print(10/0)
+
 
 def is_inside_intersection_compare(ray_origin, ray_destination, obj):
     ''' Returns if raycast from vertex intersects faces odd amount of times. Odd = inside, Even = outside '''
@@ -46,7 +51,7 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
 
     i = 1
     while (face_idx != -1):
-        loc = loc.lerp(direction, amount)    
+        loc = loc.lerp(direction, amount)
         f = obj.ray_cast(mat * loc, mat * ray_destination)
         result, loc, normal, face_idx = f
         print(face_idx)
@@ -58,12 +63,14 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
 
     return not ((i % 2) == 0)
 
+
 def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     ''' Method using comparing of outward facing mesh normal with vertex point. '''
     # Convert the point from global space to mesh local space
     target_pt_local = mesh_obj.matrix_world.inverted() * target_pt_global
     # Find the nearest point on the mesh and the nearest face normal
-    _, pt_closest, face_normal, _ = mesh_obj.closest_point_on_mesh(target_pt_local)
+    _, pt_closest, face_normal, _ = mesh_obj.closest_point_on_mesh(
+        target_pt_local)
     # Get the target-closest pt vector
     target_closest_pt_vec = (pt_closest - target_pt_local).normalized()
     # Compute the dot product = |a||b|*cos(angle)
@@ -73,6 +80,7 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     # Allow for some rounding error
     inside = angle < 90-tolerance
     return inside
+
 
 data = bpy.data
 objects = data.objects
@@ -84,7 +92,7 @@ active_obj = objects['Artefacts']
 art_offset = active_obj.location
 art_verts = active_obj.data.vertices
 count = 0
-duplicates  = []
+duplicates = []
 inside_artefacts = []
 
 inside_artefacts = []
@@ -99,8 +107,8 @@ for ob in objects:
             inside_artefacts.append(ob)
 # print(multipoint[0])
 # print(len(multipoint))
-print('count: {}'.format(count))
-print('inside arts', len(inside_artefacts))
+# print('count: {}'.format(count))
+# print('inside arts', len(inside_artefacts))
 
 # writing to shapefile.
 
@@ -111,30 +119,41 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
     source_driver = source.driver
     source_crs = source.crs
 
-    print(source_schema) # attribute fields & geometry def as dict
-    print(source_driver) # "ESRI Shapefile"
-    print(source_crs) # coordinate system
+    print(source_schema)  # attribute fields & geometry def as dict
+    print(source_driver)  # "ESRI Shapefile"
+    print(source_crs)  # coordinate system
 
     with fiona.open(
         './output.shp',
         'w',
-        driver = source_driver,
-        crs = source_crs,
-        schema = source_schema
+        driver=source_driver,
+        crs=source_crs,
+        schema=source_schema
     ) as sh_output:
-        written = 0
-
         geoscene_origin_x = bpy.data.window_managers["WinMan"].crsx
         geoscene_origin_y = bpy.data.window_managers["WinMan"].crsy
         for ob in inside_artefacts:
+            # print(ob.location.x)
+            # print(ob.location.y)
+            # added_x = ob.location.x + geoscene_origin_x
+            # added_y = ob.location.y + geoscene_origin_y
+            geo_coordinates = (
+                        ob.location.x,
+                        ob.location.y,
+                        # ob.location.x + geoscene_origin_x,
+                        # ob.location.y + geoscene_origin_y,
+                        ob.location.z
+                    )
+            # print(geo_coordinates)
+            # print(added_x)
+            # print(added_y)
+            # print('added minus original', added_x - ob.location.x)
+            # print('added y minus original', added_y - ob.location.y)
+            # TODO: offset is consistently wrong by 0.0084 on x axis and 0.2332 on the y axis. This seems to occur using different CRS systems as well.
             sh_output.write({
                 'geometry': {
                     'type': 'Point',
-                    'coordinates': (
-                        ob.location.x + geoscene_origin_x,
-                        ob.location.y + geoscene_origin_y,
-                        ob.location.z
-                    ),
+                    'coordinates': geo_coordinates,
                 },
                 'properties': {
                     'Id': ob['Id'],
@@ -145,25 +164,3 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
                     'DBL': ob['DBL'],
                 }
             })
-
-        # for feature in source:
-        #     print(feature)
-        #     # print(feature['Artefact'])
-        #     # pprint(feature['properties']['Artefact'])
-        #     if (feature['properties']['Artefact'] in inside_artefacts) :
-        #         written += 1
-        #         sh_output.write(feature)
-        # print("written", written)
-
-
-# print(len(inside_artefacts))
-# print(inside_artefacts)
-
-# print(bpy.ops.geoscene.coords.poll())
-print(bpy.data.window_managers["WinMan"].displayOriginPrj)
-print(bpy.data.window_managers["WinMan"].crsx)
-print(bpy.data.window_managers["WinMan"].crsy)
-# TODO: find way to map source points to selected blender objects (so far artefact.id is error prone.)
-# TODO: Another possible solution is to continue on with writing a shapefile using the blender objects but instead of using x, y, z 
-# I can use BlenderGIS with whatever the current setting is and use the bpy.ops.geoscene.coords() method to get the right shapefile coordinates.    
-# Look into proj/proj4 for reprojecting cartesian coordiantes
