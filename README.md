@@ -39,4 +39,4 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 * Blender 2.79 **(Does not yet work with 2.8)**
 * To import the artefacts shapefile you will need BlenderGIS installed like the volume creation script.
-* Fiona
+* Fiona - **note:** This is a python library. Blender uses it's own internal python. In order to install modules for Python, create a virtual environment to install fiona and attrs to, then copy those module folders into Blenders python modules directory.
