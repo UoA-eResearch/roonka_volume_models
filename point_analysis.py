@@ -116,8 +116,6 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
         crs=source_crs,
         schema=source_schema
     ) as sh_output:
-        geoscene_origin_x = bpy.data.window_managers["WinMan"].crsx
-        geoscene_origin_y = bpy.data.window_managers["WinMan"].crsy
         features_written = 0
         for feature in source:
             bleh = feature['properties']['Id']
