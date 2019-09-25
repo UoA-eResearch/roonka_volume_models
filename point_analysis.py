@@ -10,6 +10,9 @@ from math import pi, acos
 # need to install fiona and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
 import fiona
 
+shapefile_source_path = '/home/warrick/Desktop/artefacts/Artefacts.shp'
+output_directory_path = '/home/warrick/Desktop/artefacts/output.shp'
+
 
 def edit_mode():
     bpy.ops.object.mode_set(mode='EDIT')
@@ -83,12 +86,14 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
 
 def write_to_shapefile(artefact_ids):
     ''' Creates a duplicate shapefile that excludes specified ids '''
-    with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
+    # with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
+    with fiona.open(shapefile_source_path) as source:
         source_schema = source.schema
         source_driver = source.driver
         source_crs = source.crs
         with fiona.open(
-            './output.shp',
+            # './output.shp',
+            output_directory_path,
             'w',
             driver=source_driver,
             crs=source_crs,
