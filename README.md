@@ -39,4 +39,17 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 * Blender 2.79 **(Does not yet work with 2.8)**
 * To import the artefacts shapefile you will need BlenderGIS installed like the volume creation script.
-* Fiona - **note:** This is a python library. Blender uses it's own internal python. In order to install modules for Python, create a virtual environment to install fiona and attrs to, then copy those module folders into Blenders python modules directory.
+* Fiona - **note:** This is a python library. Blender uses it's own internal python so pip install will not work.
+  * One way to install the modules is to install them into a virtual environment then copy the site-package directories to a location Blender's Python will find them.
+  * Instructions for how to install modules to Blender's Python can be found here substituting 'bs4' for 'fiona' and 'attrs': <http://lacuisine.tech/2017/10/19/how-to-install-python-libs-in-blender-part-1/>
+* Once the modules are installed the script can be run.
+
+#### Running the script
+
+* Open up a text-editor window in Blender.
+* Open the 'point_analysis.py' script in this repository.
+* Edit the path variables to your artefacts file and desired output directory.
+* Import the Artefacts shapefile using BlenderGIS - specify import as separate objects so the points keep their GIS attributes.
+* Select/or create a closed mesh that you wish to find points within.
+* With the mesh selected, run the script.
+* After this is run, the output shapefile should be found in the directory specified in the output path variable.
