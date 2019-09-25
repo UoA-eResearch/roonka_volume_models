@@ -7,9 +7,8 @@ from collections import OrderedDict
 from mathutils import Vector, Matrix
 from math import pi, acos
 
-# need to install fiona, shapely and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
+# need to install fiona and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
 import fiona
-from shapely.geometry import mapping, Point, MultiPoint
 
 
 def edit_mode():
