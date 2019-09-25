@@ -7,7 +7,6 @@ from collections import OrderedDict
 from mathutils import Vector, Matrix
 from math import pi, acos
 
-
 # need to install fiona, shapely and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
 import fiona
 from shapely.geometry import mapping, Point, MultiPoint
@@ -26,10 +25,11 @@ def select(obj_name):
 
 
 def deselect(obj_name):
-    objects[obj_name].select = False
+    bpy.data.objects[obj_name].select = False
 
 
-def brek():
+def end():
+    ''' ends script without quitting blender. '''
     print(10/0)
 
 
@@ -83,7 +83,7 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
 
 
 def write_to_shapefile(artefact_ids):
-    # writing to shapefile.
+    ''' Creates a duplicate shapefile that excludes specified ids '''
     with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
         source_schema = source.schema
         source_driver = source.driver
@@ -98,33 +98,32 @@ def write_to_shapefile(artefact_ids):
             features_written = 0
             for feature in source:
                 artefact_id = feature['properties']['Id']
-                # print(bleh)
                 if artefact_id in artefact_ids:
                     features_written += 1
                     sh_output.write(feature)
     print('Features written to output file: ', features_written)
 
 
-data = bpy.data
-objects = data.objects
-active_obj = bpy.context.scene.objects.active
-volume_obj = active_obj
-deselect(active_obj.name)
+def find_features_inside_volume():
+    ''' Returns list of Id properties from all objects starting with 'Artefact' in the scene.'''
+    active_obj = bpy.context.scene.objects.active
+    volume_obj = active_obj
+    deselect(active_obj.name)
 
-active_obj = objects['Artefacts']
-art_offset = active_obj.location
-art_verts = active_obj.data.vertices
-artefact_ids = []
-count = 0
-for ob in objects:
-    if ob.name.startswith('Artefacts'):
-        start_pos = ob.location
-        end_pos = start_pos + Vector([0, 0, 1000])
-        if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
-            ob.select = True
-            count += 1
-            artefact_ids.append(ob['Id']) 
-print('Points selected: ', count)
-print('Ids in list: ', len(artefact_ids))
+    artefact_ids = []
+    count = 0
+    for ob in bpy.data.objects:
+        if ob.name.startswith('Artefacts'):
+            start_pos = ob.location
+            end_pos = start_pos + Vector([0, 0, 1000])
+            if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
+                ob.select = True
+                count += 1
+                artefact_ids.append(ob['Id'])
+    print('Points selected: ', count)
+    print('Ids in list: ', len(artefact_ids))
+    return artefact_ids
 
+
+artefact_ids = find_features_inside_volume()
 write_to_shapefile(artefact_ids)
