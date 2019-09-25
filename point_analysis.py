@@ -94,6 +94,7 @@ art_verts = active_obj.data.vertices
 count = 0
 duplicates = []
 inside_artefacts = []
+art_ids = []
 
 inside_artefacts = []
 for ob in objects:
@@ -103,12 +104,10 @@ for ob in objects:
         if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
             ob.select = True
             count += 1
-            artefact_id = ob['Artefact']
+            art_ids.append(ob['Id']) 
             inside_artefacts.append(ob)
-# print(multipoint[0])
-# print(len(multipoint))
-# print('count: {}'.format(count))
-# print('inside arts', len(inside_artefacts))
+print('count: {}'.format(count))
+print('art ids length', len(art_ids))
 
 # writing to shapefile.
 
@@ -119,9 +118,9 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
     source_driver = source.driver
     source_crs = source.crs
 
-    print(source_schema)  # attribute fields & geometry def as dict
-    print(source_driver)  # "ESRI Shapefile"
-    print(source_crs)  # coordinate system
+    # print(source_schema)  # attribute fields & geometry def as dict
+    # print(source_driver)  # "ESRI Shapefile"
+    # print(source_crs)  # coordinate system
 
     with fiona.open(
         './output.shp',
@@ -132,35 +131,41 @@ with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
     ) as sh_output:
         geoscene_origin_x = bpy.data.window_managers["WinMan"].crsx
         geoscene_origin_y = bpy.data.window_managers["WinMan"].crsy
-        for ob in inside_artefacts:
-            # print(ob.location.x)
-            # print(ob.location.y)
-            # added_x = ob.location.x + geoscene_origin_x
-            # added_y = ob.location.y + geoscene_origin_y
-            geo_coordinates = (
-                        ob.location.x,
-                        ob.location.y,
-                        # ob.location.x + geoscene_origin_x,
-                        # ob.location.y + geoscene_origin_y,
-                        ob.location.z
-                    )
+        wrote = 0
+        for feature in source:
+            bleh = feature['properties']['Id']
+            # print(bleh)
+            if bleh in art_ids:
+                wrote += 1
+                sh_output.write(feature)
+        print(wrote)
+
+        # for ob in inside_artefacts:
+
+            # geo_coordinates = (
+            #             ob.location.x + geoscene_origin_x,
+            #             ob.location.y + geoscene_origin_y,
+            #             ob.location.z
+            #         )
+
             # print(geo_coordinates)
             # print(added_x)
             # print(added_y)
             # print('added minus original', added_x - ob.location.x)
             # print('added y minus original', added_y - ob.location.y)
             # TODO: offset is consistently wrong by 0.0084 on x axis and 0.2332 on the y axis. This seems to occur using different CRS systems as well.
-            sh_output.write({
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': geo_coordinates,
-                },
-                'properties': {
-                    'Id': ob['Id'],
-                    'Type': ob['Type'],
-                    'Artefact': ob['Artefact'],
-                    'Level': ob['Level'],
-                    'Layer': ob['Layer'],
-                    'DBL': ob['DBL'],
-                }
-            })
+
+            # sh_output.write({
+            #     'geometry': {
+            #         'type': 'Point',
+            #         'coordinates': geo_coordinates,
+            #     },
+            #     'properties': {
+            #         'Id': ob['Id'],
+            #         'Type': ob['Type'],
+            #         'Artefact': ob['Artefact'],
+            #         'Level': ob['Level'],
+            #         'Layer': ob['Layer'],
+            #         'DBL': ob['DBL'],
+            #     }
+            # })
