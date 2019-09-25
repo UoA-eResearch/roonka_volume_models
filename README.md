@@ -49,6 +49,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 * Open up a text-editor window in Blender.
 * Open the 'point_analysis.py' script in this repository.
 * Edit the path variables for you desired output directory.
+* Make sure the 'Id' attribute of the points within the shapefile are unique values.
 * Edit the shapefile path to match the location of the shapefile you are importing. This is for when we the script creates an edited clone of this shapefile. In this case it should be the path of the Artefacts shapefile.
 * Import the Artefacts shapefile using BlenderGIS - specify import as separate objects so the points keep their GIS attributes.
 * Select/or create a closed mesh that you wish to find points within.
