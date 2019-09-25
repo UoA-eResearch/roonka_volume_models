@@ -1,8 +1,15 @@
-# Roonka Volume Meshes
+# Roonka 3D Tools
+
+## Sections
+
+* Volume Creation from Layered Shapefiles
+* Point selection using volumes
 
 ## How to use
 
-### Prerequisites
+### Volume Creation From Layered Shapefiles
+
+#### Prerequisites
 
 Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
@@ -10,7 +17,7 @@ Currently this script has only been tested on versions 2.79 and 2.78 of Blender 
 
 Simply go to the link for the add-on and download the .zip file using the green clone/download button. In Blender, navigate to the preferences >> add-ons >> install and navigate to the .zip file that was downloaded earlier. Once installed you should have the add-on listed which can then be selected using the check box.
 
-### Set up and running
+#### Set up and running
 
 1. Download this repository using either git or selecting the green 'clone or download' button on the repository main page.
 2. Unzip the file and extract 'mesh_create.py' somewhere memorable and take note of the path as it's the script that will be run.
@@ -25,3 +32,11 @@ Simply go to the link for the add-on and download the .zip file using the green 
 8. Save the edits to the file using the 'Text' menu in the text editor toolbar.
 9. Select 'run script' from the bottom toolbar.
 10. After some time processing, the .dae models should have been exported and can be located in the same folder as the path specified in the base_dir.
+
+### Point Selection Using Volumes
+
+#### Prerequesites
+
+* Blender 2.79 **(Does not yet work with 2.8)**
+* To import the artefacts shapefile you will need BlenderGIS installed like the volume creation script.
+* Fiona
