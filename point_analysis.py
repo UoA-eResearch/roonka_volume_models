@@ -82,6 +82,29 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     return inside
 
 
+def write_to_shapefile(artefact_ids):
+    # writing to shapefile.
+    with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
+        source_schema = source.schema
+        source_driver = source.driver
+        source_crs = source.crs
+        with fiona.open(
+            './output.shp',
+            'w',
+            driver=source_driver,
+            crs=source_crs,
+            schema=source_schema
+        ) as sh_output:
+            features_written = 0
+            for feature in source:
+                artefact_id = feature['properties']['Id']
+                # print(bleh)
+                if artefact_id in artefact_ids:
+                    features_written += 1
+                    sh_output.write(feature)
+    print('Features written to output file: ', features_written)
+
+
 data = bpy.data
 objects = data.objects
 active_obj = bpy.context.scene.objects.active
@@ -104,23 +127,4 @@ for ob in objects:
 print('Points selected: ', count)
 print('Ids in list: ', len(artefact_ids))
 
-# writing to shapefile.
-with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
-    source_schema = source.schema
-    source_driver = source.driver
-    source_crs = source.crs
-    with fiona.open(
-        './output.shp',
-        'w',
-        driver=source_driver,
-        crs=source_crs,
-        schema=source_schema
-    ) as sh_output:
-        features_written = 0
-        for feature in source:
-            bleh = feature['properties']['Id']
-            # print(bleh)
-            if bleh in artefact_ids:
-                features_written += 1
-                sh_output.write(feature)
-print('Features written to output file: ', features_written)
+write_to_shapefile(artefact_ids)
