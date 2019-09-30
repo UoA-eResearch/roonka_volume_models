@@ -3,6 +3,7 @@ import bpy
 import bmesh
 from mathutils import Vector, Matrix
 
+output_path = '/home/warrick/Desktop/'
 remesh_octree_depth = 6
 
 def edit_mode():
@@ -31,10 +32,13 @@ def deselect_all():
 
 
 def select_objects(str):
-    # objects = []
     for obj in bpy.data.objects:
         if obj.name.startswith('TIN'):
             obj.select = True
+
+
+def active_obj():
+    return bpy.context.scene.objects.active
 
 
 data = bpy.data
@@ -43,6 +47,7 @@ active_obj = bpy.context.scene.objects.active
 # select both objects
 
 layers = bpy.context.selected_objects
+print(layers)
 cube_spawn_loc =Vector([0, 0, 0])
 for layer in layers:
     bpy.ops.object.select_all(action='DESELECT')
@@ -80,4 +85,13 @@ shrinker.wrap_method = 'NEAREST_VERTEX'
 # shrinker.wrap_method = shrink_method
 bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Shrinkwrap")
 
-# Decimate/Subdivide
+# Smooth?
+# Decimate/Subdivide?
+
+# Rename & set file name
+bpy.context.scene.objects.active.name = '_'.join([l.name for l in layers]) + "_connected"
+bpy.context.scene.objects.active.select = True
+output_filename = bpy.context.scene.objects.active.name 
+
+# export
+bpy.ops.wm.collada_export(filepath=output_path + output_filename, selected=True)
