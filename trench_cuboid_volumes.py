@@ -58,7 +58,7 @@ for layer in layers:
     bpy.ops.tesselation.delaunay()
 
 # Joining delaunay layers
-print('attempting join...')
+print('Joining TINs')
 deselect_all()
 select_objects('TIN')
 bpy.ops.object.join()
@@ -72,6 +72,7 @@ cube_spawn_loc /= 2
 bpy.ops.mesh.primitive_cube_add(location=cube_spawn_loc)
 
 #Remesh
+print('remeshing')
 remesher = bpy.context.scene.objects.active.modifiers.new(name="Remesh", type="REMESH")
 remesher.octree_depth = remesh_octree_depth
 remesher.mode = "BLOCKS"
@@ -79,16 +80,26 @@ remesher.use_smooth_shade = False
 bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Remesh")
 
 # Shrinkwrap
+print('shrinkwrapping')
 shrinker = bpy.context.scene.objects.active.modifiers.new(name="Shrinkwrap", type="SHRINKWRAP")
 shrinker.target = bpy.data.objects[join_layer_name]
 shrinker.wrap_method = 'NEAREST_VERTEX'
+# shrinker.wrap_method = 'NEAREST_SURFACEPOINT'
 # shrinker.wrap_method = shrink_method
 bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Shrinkwrap")
 
 # Smooth?
 # Decimate/Subdivide?
+# NOTE: only necessary if surface point shrinking. Vertex point seems to simplify the mesh already
+
+# recalculate normals
+print('recalculating normals')
+edit_mode()
+bpy.ops.mesh.normals_make_consistent()
+ob_mode()
 
 # Rename & set file name
+print('exporting file')
 bpy.context.scene.objects.active.name = '_'.join([l.name for l in layers]) + "_connected"
 bpy.context.scene.objects.active.select = True
 output_filename = bpy.context.scene.objects.active.name 
