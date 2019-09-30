@@ -55,3 +55,19 @@ Simply go to the link for the add-on and download the .zip file using the green 
 * Select/or create a closed mesh that you wish to find points within.
 * With the mesh selected, run the script.
 * After this is run, the output shapefile should be found in the directory specified in the output path variable.
+
+### Trench Rectangular Volumes
+
+#### Prerequesites
+
+* Blender 2.79
+* Load in the layers you wish to connect.
+
+#### Running the Script
+
+* Open up 'trench_cuboid_volumes.py' in a text editor window in Blender
+* Edit the output path line at the top of the file to a directory that suits you.
+* Load in the shapefiles containing the points you wish to convert into a volume.
+* Select the layers you wish to convert into a trench using 3D or outliner windows
+* Run the script
+* The trench volume will be generated in the scene and the output .dae file should be created at the output directory.
