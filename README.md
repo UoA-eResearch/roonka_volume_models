@@ -4,7 +4,7 @@
 
 * Volume Creation from Layered Shapefiles
 * Point selection using volumes
-* Trench Creation from point layers (###trench rectangular volumes)
+* Trench Creation from point layers
 
 ## How to use
 
