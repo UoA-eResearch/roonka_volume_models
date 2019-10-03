@@ -72,3 +72,12 @@ Simply go to the link for the add-on and download the .zip file using the green 
 * Select the layers you wish to convert into a trench using 3D or outliner windows
 * Run the script
 * The trench volume will be generated in the scene and the output .dae file should be created at the output directory.
+
+### Bulk Importer/Exporters
+
+#### Running the script
+
+* Open up the importer/exporter
+* Change the file paths where comments have been added to suit your case.
+* Run the script
+
