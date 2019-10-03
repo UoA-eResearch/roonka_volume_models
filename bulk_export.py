@@ -1,4 +1,3 @@
-
 import bpy
 
 def deselect_all():
