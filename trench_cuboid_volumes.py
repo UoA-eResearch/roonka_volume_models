@@ -34,7 +34,7 @@ def deselect_all():
 def select_objects(str):
     for obj in bpy.data.objects:
         if obj.name.startswith('TIN'):
-            obj.select = True
+            obj.select_set(True)
 
 
 def active_obj():
@@ -43,7 +43,7 @@ def active_obj():
 
 data = bpy.data
 objects = bpy.data.objects
-active_obj = bpy.context.scene.objects.active
+active_obj = bpy.context.view_layer.objects.active
 # select both objects
 
 layers = bpy.context.selected_objects
@@ -51,7 +51,7 @@ print(layers)
 cube_spawn_loc =Vector([0, 0, 0])
 for layer in layers:
     bpy.ops.object.select_all(action='DESELECT')
-    layer.select = True
+    layer.select_set(True)
     print(layer.location)
     cube_spawn_loc += layer.location
     active_obj = layer
@@ -62,7 +62,7 @@ print('Joining TINs')
 deselect_all()
 select_objects('TIN')
 bpy.ops.object.join()
-join_layer_name = bpy.context.scene.objects.active.name
+join_layer_name = bpy.context.view_layer.objects.active.name
 print(join_layer_name)
 
 # create the cube in the middle of the layers
@@ -73,7 +73,7 @@ bpy.ops.mesh.primitive_cube_add(location=cube_spawn_loc)
 
 #Remesh
 print('remeshing')
-remesher = bpy.context.scene.objects.active.modifiers.new(name="Remesh", type="REMESH")
+remesher = bpy.context.view_layer.objects.active.modifiers.new(name="Remesh", type="REMESH")
 remesher.octree_depth = remesh_octree_depth
 remesher.mode = "BLOCKS"
 remesher.use_smooth_shade = False
@@ -81,7 +81,7 @@ bpy.ops.object.modifier_apply(apply_as='DATA', modifier="Remesh")
 
 # Shrinkwrap
 print('shrinkwrapping')
-shrinker = bpy.context.scene.objects.active.modifiers.new(name="Shrinkwrap", type="SHRINKWRAP")
+shrinker = bpy.context.view_layer.objects.active.modifiers.new(name="Shrinkwrap", type="SHRINKWRAP")
 shrinker.target = bpy.data.objects[join_layer_name]
 shrinker.wrap_method = 'NEAREST_VERTEX'
 # shrinker.wrap_method = 'NEAREST_SURFACEPOINT'
@@ -100,9 +100,9 @@ ob_mode()
 
 # Rename & set file name
 print('exporting file')
-bpy.context.scene.objects.active.name = '_'.join([l.name for l in layers]) + "_connected"
-bpy.context.scene.objects.active.select = True
-output_filename = bpy.context.scene.objects.active.name 
+bpy.context.view_layer.objects.active.name = '_'.join([l.name for l in layers]) + "_connected"
+bpy.context.view_layer.objects.active.select_set(True)
+output_filename = bpy.context.view_layer.objects.active.name 
 
 # export
 bpy.ops.wm.collada_export(filepath=output_path + output_filename, selected=True)
