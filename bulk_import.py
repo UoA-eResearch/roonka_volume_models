@@ -3,7 +3,6 @@ import glob
 
 def import_shapefiles(base_dir):
     paths = glob.glob(base_dir + '*.shp')
-    print(paths)
     for path in paths:
         bpy.ops.importgis.shapefile(filepath=path)
 
