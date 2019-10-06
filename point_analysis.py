@@ -8,6 +8,9 @@ from mathutils import Vector, Matrix
 from math import pi, acos
 
 # need to install fiona and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
+# if you are using blender 2.8, you can simply install fiona using pip by running the following.
+# path/to/blenders/python37m pip install fiona
+# https://blender.stackexchange.com/a/56013 stack exchange instructions
 import fiona
 
 shapefile_source_path = '/home/warrick/Desktop/artefacts/Artefacts.shp'
@@ -23,11 +26,11 @@ def ob_mode():
 
 
 def select(obj_name):
-    objects[obj_name].select = True
+    bpy.data.objects[obj_name].select_set(True)
 
 
 def deselect(obj_name):
-    bpy.data.objects[obj_name].select = False
+    bpy.data.objects[obj_name].select_set(False)
 
 
 def end():
@@ -40,7 +43,7 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
     # print(ray_origin, ray_destination, obj)
     mat = obj.matrix_local.inverted()
     f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
-    result, loc, normal, face_idx = f
+    _, loc, _, face_idx = f
 
     if face_idx == -1:
         return False
@@ -55,7 +58,7 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
     while (face_idx != -1):
         loc = loc.lerp(direction, amount)
         f = obj.ray_cast(mat * loc, mat * ray_destination)
-        result, loc, normal, face_idx = f
+        _, loc, _, face_idx = f
         print(face_idx)
         if face_idx == -1:
             break
@@ -111,7 +114,7 @@ def write_to_shapefile(artefact_ids):
 def find_features_inside_volume():
     ''' Returns list of Id properties from all objects within the active object and are starting with 'Artefact' in the scene.'''
     # TODO: Refactor to remove this section from this function.
-    active_obj = bpy.context.scene.objects.active
+    active_obj = bpy.context.view_layer.objects.active
     volume_obj = active_obj
     deselect(active_obj.name)
 
@@ -123,7 +126,7 @@ def find_features_inside_volume():
             start_pos = ob.location
             end_pos = start_pos + Vector([0, 0, 1000])
             if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
-                ob.select = True
+                select(ob)
                 count += 1
                 artefact_ids.append(ob['Id'])
     print('Points selected: ', count)
