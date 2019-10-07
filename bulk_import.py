@@ -1,7 +1,6 @@
 import bpy
 import glob
 
-
 def import_shapefiles(base_dir):
     paths = glob.glob(base_dir + '*.shp')
     for path in paths:
@@ -16,7 +15,7 @@ def import_collada_files(base_dir):
 
 # change this to the path of the directory/folder containing all the files you wish
 # to import
-base_dir = '/home/warrick/Desktop/roonka_features/'
+base_dir = '/home/warrick/Desktop/roonka/layer_trench/Trench/'
 
 # change this to shapefile or collada depending on what you wish to import.
 import_file_type = 'shapefile'
