@@ -11,7 +11,7 @@ from math import pi, acos
 # if you are using blender 2.8, you can simply install fiona using pip by running the following.
 # path/to/blenders/python37m pip install fiona
 # https://blender.stackexchange.com/a/56013 stack exchange instructions
-import fiona
+
 
 shapefile_source_path = '/home/warrick/Desktop/artefacts/Artefacts.shp'
 output_directory_path = '/home/warrick/Desktop/artefacts/output.shp'
@@ -42,7 +42,7 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
     ''' Returns if raycast from vertex intersects faces odd amount of times. Odd = inside, Even = outside '''
     # print(ray_origin, ray_destination, obj)
     mat = obj.matrix_local.inverted()
-    f = obj.ray_cast(mat * ray_origin, mat * ray_destination)
+    f = obj.ray_cast(mat @ ray_origin, mat @ ray_destination)
     _, loc, _, face_idx = f
 
     if face_idx == -1:
@@ -57,7 +57,7 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
     i = 1
     while (face_idx != -1):
         loc = loc.lerp(direction, amount)
-        f = obj.ray_cast(mat * loc, mat * ray_destination)
+        f = obj.ray_cast(mat @ loc, mat @ ray_destination)
         _, loc, _, face_idx = f
         print(face_idx)
         if face_idx == -1:
@@ -72,7 +72,7 @@ def is_inside_intersection_compare(ray_origin, ray_destination, obj):
 def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     ''' Method using comparing of outward facing mesh normal with vertex point. '''
     # Convert the point from global space to mesh local space
-    target_pt_local = mesh_obj.matrix_world.inverted() * target_pt_global
+    target_pt_local = mesh_obj.matrix_world.inverted() @ target_pt_global
     # Find the nearest point on the mesh and the nearest face normal
     _, pt_closest, face_normal, _ = mesh_obj.closest_point_on_mesh(
         target_pt_local)
@@ -126,7 +126,7 @@ def find_features_inside_volume():
             start_pos = ob.location
             end_pos = start_pos + Vector([0, 0, 1000])
             if is_inside_intersection_compare(start_pos, end_pos, volume_obj) and is_inside_angle_compare(ob.location, volume_obj):
-                select(ob)
+                select(ob.name)
                 count += 1
                 artefact_ids.append(ob['Id'])
     print('Points selected: ', count)
@@ -135,4 +135,7 @@ def find_features_inside_volume():
 
 
 artefact_ids = find_features_inside_volume()
+print('hi', artefact_ids)
+
+import fiona
 write_to_shapefile(artefact_ids)
