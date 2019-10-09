@@ -7,6 +7,11 @@ from collections import OrderedDict
 from mathutils import Vector, Matrix
 from math import pi, acos
 
+import shutil
+from os import path
+
+import shapefile
+
 # need to install fiona and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
 # if you are using blender 2.8, you can simply install fiona using pip by running the following.
 # path/to/blenders/python37m pip install fiona
@@ -87,7 +92,7 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     return inside
 
 
-def write_to_shapefile(artefact_ids):
+def write_to_shapefile_fiona(artefact_ids):
     ''' Creates a duplicate shapefile that excludes specified ids '''
     # with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
     with fiona.open(shapefile_source_path) as source:
@@ -109,6 +114,37 @@ def write_to_shapefile(artefact_ids):
                     features_written += 1
                     sh_output.write(feature)
     print('Features written to output file: ', features_written)
+
+def write_to_shapefile_pyshp(artefact_ids):
+
+    def _copy_file(f_path):
+        if path.exists(f_path):
+            src = path.realpath(f_path)
+        head, tail = path.split(src)
+        dst = src + ".copy"
+        # shutil.copy(src, dst)
+        return dst
+
+
+    # dest = _copy_file("/home/warrick/Desktop/roonka/artefacts/Artefacts.shp")
+    # dest_dbf = _copy_file("/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf")
+
+    source_shp = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.shp', 'rb')
+    source_dbf = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf', 'rb')
+    shp_reader = shapefile.Reader(shp=source_shp, dbf=source_dbf)
+    source_fields = shp_reader.fields
+    # print(shp_reader.shapeType)
+    # print(shp_reader.fields)
+    # print(shp_reader.record(3))
+    # print(shp_reader.__geo_interface__)
+    w = shapefile.Writer("/home/warrick/Desktop/roonka/artefacts/testy")
+    w.fields = shp_reader.fields[1:]
+    for shaperec in shp_reader.iterShapeRecords():
+        print(shaperec)
+        w.record(*shaperec.record)
+        w.shape(shaperec.shape)
+    w.close()
+
 
 
 def find_features_inside_volume():
@@ -137,5 +173,5 @@ def find_features_inside_volume():
 artefact_ids = find_features_inside_volume()
 print('hi', artefact_ids)
 
-import fiona
-write_to_shapefile(artefact_ids)
+# import fiona
+write_to_shapefile_pyshp(artefact_ids)

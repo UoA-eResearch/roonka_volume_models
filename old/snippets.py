@@ -25,3 +25,5 @@ def create_bounding_box():
     bounding_box = bpy.context.active_object
     bounding_box.name = 'bounding_box'
     return bounding_box
+
+    sys.path = [ '/home/warrick/Desktop/blender-2.80-linux-glibc217-x86_64', '/usr/lib/python2.7', '/usr/lib/python2.7/plat-x86_64-linux-gnu', '/usr/lib/python2.7/lib-tk', '/usr/lib/python2.7/lib-old', '/usr/lib/python2.7/lib-dynload', '/home/warrick/.local/lib/python2.7/site-packages', '/usr/local/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages', '/usr/lib/python2.7/dist-packages/gtk-2.0' ]
