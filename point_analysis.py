@@ -91,53 +91,11 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     inside = angle < 90-tolerance
     return inside
 
-
-def write_to_shapefile_fiona(artefact_ids):
-    ''' Creates a duplicate shapefile that excludes specified ids '''
-    # with fiona.open('/home/warrick/Desktop/artefacts/Artefacts.shp') as source:
-    with fiona.open(shapefile_source_path) as source:
-        source_schema = source.schema
-        source_driver = source.driver
-        source_crs = source.crs
-        with fiona.open(
-            # './output.shp',
-            output_directory_path,
-            'w',
-            driver=source_driver,
-            crs=source_crs,
-            schema=source_schema
-        ) as sh_output:
-            features_written = 0
-            for feature in source:
-                artefact_id = feature['properties']['Id']
-                if artefact_id in artefact_ids:
-                    features_written += 1
-                    sh_output.write(feature)
-    print('Features written to output file: ', features_written)
-
 def write_to_shapefile_pyshp(artefact_ids):
-
-    def _copy_file(f_path):
-        if path.exists(f_path):
-            src = path.realpath(f_path)
-        head, tail = path.split(src)
-        dst = src + ".copy"
-        # shutil.copy(src, dst)
-        return dst
-
-
-    # dest = _copy_file("/home/warrick/Desktop/roonka/artefacts/Artefacts.shp")
-    # dest_dbf = _copy_file("/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf")
-
     source_shp = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.shp', 'rb')
     source_dbf = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf', 'rb')
     shp_reader = shapefile.Reader(shp=source_shp, dbf=source_dbf)
-    # source_fields = shp_reader.fields
-    # print(shp_reader.shapeType)
-    # print(shp_reader.fields)
-    # print(shp_reader.record(3))
-    # print(shp_reader.__geo_interface__)
-    w = shapefile.Writer("/home/warrick/Desktop/roonka/artefacts/testy")
+    w = shapefile.Writer("/home/warrick/Desktop/roonka/artefacts/output")
     w.fields = shp_reader.fields[1:]
     for index, shaperec in enumerate(shp_reader.iterShapeRecords()):
         record = shp_reader.record(index)
@@ -176,5 +134,4 @@ def find_features_inside_volume():
 artefact_ids = find_features_inside_volume()
 print('hi', artefact_ids)
 
-# import fiona
 write_to_shapefile_pyshp(artefact_ids)
