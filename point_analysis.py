@@ -132,17 +132,20 @@ def write_to_shapefile_pyshp(artefact_ids):
     source_shp = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.shp', 'rb')
     source_dbf = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf', 'rb')
     shp_reader = shapefile.Reader(shp=source_shp, dbf=source_dbf)
-    source_fields = shp_reader.fields
+    # source_fields = shp_reader.fields
     # print(shp_reader.shapeType)
     # print(shp_reader.fields)
     # print(shp_reader.record(3))
     # print(shp_reader.__geo_interface__)
     w = shapefile.Writer("/home/warrick/Desktop/roonka/artefacts/testy")
     w.fields = shp_reader.fields[1:]
-    for shaperec in shp_reader.iterShapeRecords():
-        print(shaperec)
-        w.record(*shaperec.record)
-        w.shape(shaperec.shape)
+    for index, shaperec in enumerate(shp_reader.iterShapeRecords()):
+        record = shp_reader.record(index)
+        # print(shaperec)
+        # print(record)
+        if record[0] in artefact_ids:
+            w.record(*shaperec.record)
+            w.shape(shaperec.shape)
     w.close()
 
 
