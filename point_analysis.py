@@ -6,20 +6,14 @@ from pprint import pprint
 from collections import OrderedDict
 from mathutils import Vector, Matrix
 from math import pi, acos
-
-import shutil
-from os import path
-
 import shapefile
 
-# need to install fiona and attrs into a venv then cp their site-packages into the blender modules folder before these imports can work correctly.
-# if you are using blender 2.8, you can simply install fiona using pip by running the following.
-# path/to/blenders/python37m pip install fiona
-# https://blender.stackexchange.com/a/56013 stack exchange instructions
 
+input_shp_path = '/home/warrick/Desktop/roonka/artefacts/Artefacts.shp'
+input_dbf_path ='/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf' 
 
-shapefile_source_path = '/home/warrick/Desktop/artefacts/Artefacts.shp'
-output_directory_path = '/home/warrick/Desktop/artefacts/output.shp'
+# no file extension required
+output_shp_path = '/home/warrick/Desktop/roonka/artefacts/output'
 
 
 def edit_mode():
@@ -92,11 +86,11 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     return inside
 
 
-def write_to_shapefile_pyshp(artefact_ids):
-    source_shp = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.shp', 'rb')
-    source_dbf = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf', 'rb')
+def write_to_shapefile_pyshp(artefact_ids, input_shp_path, input_dbf_path, output_shp_path):
+    source_shp = open(input_shp_path, 'rb')
+    source_dbf = open(input_dbf_path, 'rb')
     shp_reader = shapefile.Reader(shp=source_shp, dbf=source_dbf)
-    w = shapefile.Writer("/home/warrick/Desktop/roonka/artefacts/output")
+    w = shapefile.Writer(output_shp_path)
     w.fields = shp_reader.fields[1:]
     for index, shaperec in enumerate(shp_reader.iterShapeRecords()):
         record = shp_reader.record(index)
@@ -135,4 +129,4 @@ def find_features_inside_volume():
 artefact_ids = find_features_inside_volume()
 print('hi', artefact_ids)
 
-write_to_shapefile_pyshp(artefact_ids)
+write_to_shapefile_pyshp(artefact_ids, input_shp_path, input_dbf_path, output_shp_path)
