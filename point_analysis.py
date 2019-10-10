@@ -91,6 +91,7 @@ def is_inside_angle_compare(target_pt_global, mesh_obj, tolerance=0.11):
     inside = angle < 90-tolerance
     return inside
 
+
 def write_to_shapefile_pyshp(artefact_ids):
     source_shp = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.shp', 'rb')
     source_dbf = open('/home/warrick/Desktop/roonka/artefacts/Artefacts.dbf', 'rb')
