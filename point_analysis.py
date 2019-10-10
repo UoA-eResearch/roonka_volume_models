@@ -131,6 +131,6 @@ def find_features_inside_volume():
 
 
 artefact_ids = find_features_inside_volume()
-print('hi', artefact_ids)
+print(artefact_ids)
 
 write_to_shapefile_pyshp(artefact_ids, input_shp_path, input_dbf_path, output_shp_path)
