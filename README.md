@@ -12,7 +12,7 @@
 
 #### Prerequisites
 
-Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
+Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
 #### How to install add-ons
 
@@ -57,7 +57,6 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 #### Prerequesites
 
-* Blender 2.79
 * Load in the layers you wish to connect.
 
 #### Running the Script
