@@ -37,12 +37,8 @@ Simply go to the link for the add-on and download the .zip file using the green 
 ### Point Selection Using Volumes
 
 #### Prerequesites
-
-* Blender 2.79 **(Does not yet work with 2.8)**
-* To import the artefacts shapefile you will need BlenderGIS installed like the volume creation script.
-* Fiona - **note:** This is a python library. Blender uses it's own internal python so pip install will not work.
-  * One way to install the modules is to install them into a virtual environment then copy the site-package directories to a location Blender's Python will find them.
-  * Instructions for how to install modules to Blender's Python can be found here substituting 'bs4' for 'fiona' and 'attrs': <http://lacuisine.tech/2017/10/19/how-to-install-python-libs-in-blender-part-1/>
+  * To work with shapefiles you will need to install the pyshp python library.
+  * /path/to/blender/python -m ensure pip && /path/to/blender/python -m pip install pyshp
 * Once the modules are installed the script can be run.
 
 #### Running the script
