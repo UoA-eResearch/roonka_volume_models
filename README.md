@@ -1,4 +1,4 @@
-# Roonka 3D Tools
+# Roonka Workflow Tools
 
 ## Sections
 
@@ -58,6 +58,10 @@ Simply go to the link for the add-on and download the .zip file using the green 
 * After this is run, the output shapefile should be found in the directory specified in the output path variable.
 
 ### Trench Rectangular Volumes
+
+#### Description
+
+Creates a model that contains a volume from multiple shapefiles that resemble stacked layers.
 
 #### Prerequesites
 
