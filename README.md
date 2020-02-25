@@ -66,7 +66,7 @@ Creates a model that contains a volume from multiple shapefiles that resemble st
 #### Prerequesites
 
 * Blender 2.79
-* Load in the layers you wish to connect.
+e* Load in the layers you wish to connect.
 
 #### Running the Script
 
