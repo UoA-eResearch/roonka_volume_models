@@ -56,16 +56,24 @@ for idx, file in enumerate(glob.glob("*.dae")):
 # change the target directory path to your path for this folder.
 # change the out_dir to the path to the shapefile that contains all the centroids.
 # download / move the 4326.prj file into the same folder as the .dae files as the import function calls the files from that location.
+
+# out_dir = r"C:\Users\VR Backpack\Documents\ArcGIS\Warrick_Dataset_n=78\\"
 target_directory = r"C:\Users\VR Backpack\Desktop\Warrick_Dataset_n=78\\"
-out_dir = r"C:\Users\VR Backpack\Documents\ArcGIS\Warrick_Dataset_n=78\\"
-os.chdir(target_directory)
 arcpy.env = target_directory
+
+import os
+import glob
+import arcpy
+directory = r"C:\Users\VR Backpack\Documents\ArcGIS\Warrick_Dataset_n=78\\"
+os.chdir(target_directory)
 for index, file in enumerate(glob.glob("*.dae")):
 		file_name, file_ext = file.split('.')
 		arcpy.Import3DFiles_3d(
-			in_files=target_directory + file,
-			out_featureClass=target_directory + file_name + ".shp",
-			in_featureClass=out_dir + "Feature_Centroids_n_78.shp",
+			in_files=directory + file,
+			out_featureClass=directory + file_name + ".shp",
+			in_featureClass=directory + "Feature_Centroids_n_78.shp",
 			symbol_field="Feature",
-			spatial_reference=out_dir + "4326.prj"
+			spatial_reference="Coordinate Systems/Geographic Coordinate Systems/World/WGS 1984.prj"
 		)
+
+
