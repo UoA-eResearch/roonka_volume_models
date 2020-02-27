@@ -2,7 +2,7 @@ import os
 import glob
 import arcpy
 directory = r"C:\Users\VR Backpack\Documents\ArcGIS\Warrick_Dataset_n=78\\"
-os.chdir(target_directory)
+os.chdir(directory)
 for index, file in enumerate(glob.glob("*.dae")):
 		file_name, file_ext = file.split('.')
 		arcpy.Import3DFiles_3d(
