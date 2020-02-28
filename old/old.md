@@ -1,5 +1,7 @@
 # Notes
 
+# Disregard these notes - they serve as a development log
+
 ## todo
 
 - [ ] refactor modifier additions
