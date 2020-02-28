@@ -19,7 +19,8 @@ Creates smooth 3D models with valid volumes from shapefiles containing multiple,
 
 ### Prerequisites
 
-Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
+* Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. 
+* Ensure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
 ### Installing add-ons
 
@@ -45,7 +46,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ### Prerequisites
 
-* Blender 2.79 
+* Blender 2.79b
 * To import the artefacts shapefile you will need BlenderGIS installed like the volume creation script.
 * Fiona - **note: This is a python library. Blender uses it's own internal python so pip install will not work.**
   * One way to install the modules is to install them into a virtual environment then copy the site-package directories to a location Blender's Python will find them.
@@ -68,12 +69,11 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ### Description
 
-Creates a model that contains a volume from multiple shapefiles that resemble stacked layers.
+This script creates a model that contains a volume from multiple shapefiles that resemble stacked layers.
 
 ### Prerequesites
 
-* Blender 2.79
-e* Load in the layers you wish to connect.
+* Blender 2.79b
 
 ### Usage
 
@@ -92,7 +92,7 @@ e* Load in the layers you wish to connect.
 * Change the file paths where comments have been added to suit your case.
 * Run the script
 
-## ArcScene Desktop / ArcGIS Pro Model Converter
+## ArcScene Desktop/ArcGIS Pro Model Converter
 
 ### Description
 
@@ -104,7 +104,5 @@ This script imports 3D Collada model files into ArcScene and ArcGIS as well as o
 * In the toolbar there should be an icon that when hovered over says "Python" followed by some text. Click that and it should open up a window where you can paste/type in code to run in ArcScene.
 * Move the folder containing all the .dae models to the ArcGIS folder that contains AddIns and other ArcGIS files. E.g  C:\Users\VR Backpack\Documents\ArcGIS.
 * In the code, change the path to the folder where the ".dae" models are located. Make sure to keep the path within the r" " quotemarks and use the same backslashes as well as the final "\\" for the end of the path. It should match the formatting of the path existing in the code.
-In the python window, paste in the import lines (lines 1-3) and press enter. You may need to press enter twice for the import statement to be run instead of just going to a new line in the python window.
-* copy and paste inline 4 then press enter twice.
-* Paste in lines 6-14 and press enter twice. There should be a lot of pausing as it loads in the models. Eventually you should see all the models loaded into the scene. You will also find all the shapefiles and their associated files in the original directory the .dae files were located as the output directory are the same as the input directory.
+* Copy and paste the edited code into the python terminal, you may need to press enter multiple times for the code to execute. After some delay, the models will be loaded into the scene. You will also find all the shapefiles and their associated files in the original directory the .dae files were located as the output directory are the same as the input directory.
 * If the script is to be rerun you will need to delete the existing shapefiles that are to be remade as well as their associated files as ArcScene doesn't allow duplicate files to be created.
