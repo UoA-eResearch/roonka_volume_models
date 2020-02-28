@@ -2,13 +2,14 @@
 
 ## Version
 
-Blender 2.8
+Blender 2.79b
 
 ## Contents
 
 * Volume Creation from Layered Shapefiles
 * Point selection using volumes
 * Trench Creation from point layers
+* Point selection using convex hulls (Roonka Features)
 
 ## Volume Creation From Layered Shapefiles
 

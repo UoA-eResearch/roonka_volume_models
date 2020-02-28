@@ -9,6 +9,8 @@ Blender 2.8
 * Volume Creation from Layered Shapefiles
 * Point selection using volumes
 * Trench Creation from point layers
+* Point selection using convex hulls (Roonka Features)
+
 
 ## Volume Creation From Layered Shapefiles
 
@@ -24,7 +26,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 1. Download this repository using either git or selecting the green 'clone or download' button on the repository main page.
 2. Unzip the file and extract 'mesh_create.py' somewhere memorable and take note of the path as it's the script that will be run.
-3. Launch Blender (script developed on Blender v2.79)
+3. Launch Blender (script developed on Blender v2.8)
 4. In Blender, split the scene view window in half and change the editor type from '3D View' to 'Text Editor'.
 5. On the bottom of the text editor window, to the right of the file name, select the folder icon to open a new file.
 6. Navigate to the extracted 'mesh_create.py' file from earlier to open it in the text editor.
