@@ -1,4 +1,4 @@
-# Blender 2.8 Roonka 3D Tools 
+# Roonka 2.8 Workflow Tools 
 
 ## Version
 
@@ -10,19 +10,17 @@ Blender 2.8
 * Point selection using volumes
 * Trench Creation from point layers
 
-## How to use
+## Volume Creation From Layered Shapefiles
 
-### Volume Creation From Layered Shapefiles
-
-#### Prerequisites
+### Prerequisites
 
 Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
-#### How to install add-ons
+### How to install add-ons
 
 Simply go to the link for the add-on and download the .zip file using the green clone/download button. In Blender, navigate to the preferences >> add-ons >> install and navigate to the .zip file that was downloaded earlier. Once installed you should have the add-on listed which can then be selected using the check box.
 
-#### Set up and running
+### Usage
 
 1. Download this repository using either git or selecting the green 'clone or download' button on the repository main page.
 2. Unzip the file and extract 'mesh_create.py' somewhere memorable and take note of the path as it's the script that will be run.
@@ -38,14 +36,14 @@ Simply go to the link for the add-on and download the .zip file using the green 
 9. Select 'run script' from the bottom toolbar.
 10. After some time processing, the .dae models should have been exported and can be located in the same folder as the path specified in the base_dir.
 
-### Point Selection Using Volumes
+## Point Selection Using Volumes
 
-#### Prerequesites
+### Prerequesites
   * To work with shapefiles you will need to install the pyshp python library.
   * /path/to/blender/python -m ensure pip && /path/to/blender/python -m pip install pyshp
 * Once the modules are installed the script can be run.
 
-#### Running the script
+### Usage
 
 * Open up a text-editor window in Blender.
 * Open the 'point_analysis.py' script in this repository.
@@ -57,13 +55,13 @@ Simply go to the link for the add-on and download the .zip file using the green 
 * With the mesh selected, run the script.
 * After this is run, the output shapefile should be found in the directory specified in the output path variable.
 
-### Trench Rectangular Volumes
+## Trench Rectangular Volumes
 
-#### Prerequesites
+### Prerequesites
 
 * Load in the layers you wish to connect.
 
-#### Running the Script
+### Usage
 
 * Open up 'trench_cuboid_volumes.py' in a text editor window in Blender
 * Edit the output path line at the top of the file to a directory that suits you.
@@ -74,7 +72,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ### Bulk Importer/Exporters
 
-#### Running the script
+### Running the script
 
 * Open up the importer/exporter
 * Change the file paths where comments have been added to suit your case.

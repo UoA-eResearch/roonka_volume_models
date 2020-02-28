@@ -1,6 +1,10 @@
-# Roonka Workflow Tools
+# Roonka 2.79b Workflow Tools
 
-## Sections
+## Version
+
+Blender 2.8
+
+## Contents
 
 * Volume Creation from Layered Shapefiles
 * Point selection using volumes
@@ -8,19 +12,19 @@
 
 ## Volume Creation From Layered Shapefiles
 
-#### Description
+### Description
 
 Creates smooth 3D models with valid volumes from shapefiles containing multiple, stacked, 2D layers.
 
-#### Prerequisites
+### Prerequisites
 
 Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
-#### How to install add-ons
+### Installing add-ons
 
 Simply go to the link for the add-on and download the .zip file using the green clone/download button. In Blender, navigate to the preferences >> add-ons >> install and navigate to the .zip file that was downloaded earlier. Once installed you should have the add-on listed which can then be selected using the check box.
 
-#### Usage
+### Usage
 
 1. Download this repository using either git or selecting the green 'clone or download' button on the repository main page.
 2. Unzip the file and extract 'mesh_create.py' somewhere memorable and take note of the path as it's the script that will be run.
@@ -38,7 +42,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ## Point Selection Using Volumes
 
-#### Prerequisites
+### Prerequisites
 
 * Blender 2.79 
 * To import the artefacts shapefile you will need BlenderGIS installed like the volume creation script.
@@ -47,7 +51,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
   * Instructions for how to install modules to Blender's Python can be found here substituting 'bs4' for 'fiona' and 'attrs': <http://lacuisine.tech/2017/10/19/how-to-install-python-libs-in-blender-part-1/>
 * Once the modules are installed the script can be run.
 
-#### Usage
+### Usage
 
 * Open up a text-editor window in Blender.
 * Open the 'point_analysis.py' script in this repository.
@@ -61,16 +65,16 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ## Trench Rectangular Volumes
 
-#### Description
+### Description
 
 Creates a model that contains a volume from multiple shapefiles that resemble stacked layers.
 
-#### Prerequesites
+### Prerequesites
 
 * Blender 2.79
 e* Load in the layers you wish to connect.
 
-#### Usage
+### Usage
 
 * Open up 'trench_cuboid_volumes.py' in a text editor window in Blender
 * Edit the output path line at the top of the file to a directory that suits you.
