@@ -71,7 +71,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 This script creates a model that contains a volume from multiple shapefiles that resemble stacked layers.
 
-### Prerequesites
+### Prerequisites
 
 * Blender 2.79b
 
@@ -93,6 +93,11 @@ This script creates a model that contains a volume from multiple shapefiles that
 * Run the script
 
 ## ArcScene Desktop/ArcGIS Pro Model Converter
+
+### Prerequisites
+
+* An ArcGIS Pro or ArcScene Desktop installation.
+* 
 
 ### Description
 
