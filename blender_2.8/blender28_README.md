@@ -40,7 +40,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ## Point Selection Using Volumes
 
-### Prerequesites
+### Prerequisites
   * To work with shapefiles you will need to install the pyshp python library.
   * /path/to/blender/python -m ensure pip && /path/to/blender/python -m pip install pyshp
 * Once the modules are installed the script can be run.
@@ -59,7 +59,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ## Trench Rectangular Volumes
 
-### Prerequesites
+### Prerequisites
 
 * Load in the layers you wish to connect.
 
