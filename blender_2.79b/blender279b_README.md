@@ -97,7 +97,6 @@ This script creates a model that contains a volume from multiple shapefiles that
 ### Prerequisites
 
 * An ArcGIS Pro or ArcScene Desktop installation.
-* 
 
 ### Description
 
