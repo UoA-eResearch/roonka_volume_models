@@ -7,6 +7,9 @@ from mathutils import Vector, Matrix
 delete_after_export = False
 octree_depth = 7
 
+# shapefile CRS
+shpCRS = "EPSG:4326"
+
 def create_hull():
     # CONVERTS TO CONVEX HULL
     context = bpy.context
