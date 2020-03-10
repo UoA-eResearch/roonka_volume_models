@@ -101,6 +101,7 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
         bpy.ops.wm.collada_export(filepath=output_path, selected=True)
     if delete:
         _delete_original_and_hull()
+    bpy.ops.geoscene.clear_georef()
 
 if __name__ == '__main__':
     # change the 'base_dir' line quotes to match the folder path where all the .shp files are on your PC.
