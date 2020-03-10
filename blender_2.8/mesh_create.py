@@ -10,6 +10,9 @@ octree_depth = 7
 # shapefile CRS
 shpCRS = "EPSG:4326"
 
+# include volume in file name
+volume_in_filename = False
+
 def create_hull():
     # CONVERTS TO CONVEX HULL
     context = bpy.context
@@ -74,7 +77,14 @@ def get_object_volume(obj):
     
 def create_output_file_name(base_dir, object, shrink_type, smooth_iterations, file_type='dae'):
     volume_str = str(round(get_object_volume(object), 3))
-    file_name = '{}{}_shrink-type-{}_smooth_iterations-{}_volume-{}.{}'.format(base_dir, object.name, shrink_type, smooth_iterations, volume_str, file_type)
+    feature_name = object.name.split('.')[0]
+    feature_name = feature_name.split('(')[0].strip(' ')
+    print(feature_name)
+    if volume_in_filename:
+        file_name = '{}{}_{}.{}'.format(base_dir, object.name, volume_str, file_type)
+    else:
+        file_name = '{}{}.{}'.format(base_dir, feature_name, file_type)
+    print("file name: " + file_name)
     return file_name
 
 def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smooth_iterations=30, file_type='dae', delete=False):
@@ -88,7 +98,7 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
         original.select_set(state=True)
         bpy.ops.object.delete(use_global=False)
 
-    bpy.ops.importgis.shapefile(filepath=shp)
+    bpy.ops.importgis.shapefile(filepath=shp, shpCRS=shpCRS)
     convex_hull, original = create_hull()
     obj = remesh(convex_hull, original, shrink_method)
     singular_select(obj)
@@ -99,14 +109,16 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
         bpy.ops.wm.collada_export(filepath=output_path, selected=True)
     if delete:
         _delete_original_and_hull()
+    bpy.ops.geoscene.clear_georef()
 
 if __name__ == '__main__':
     # change the 'base_dir' line quotes to match the folder path where all the .shp files are on your PC.
     # The directory needs to include all the files related to the .shp file.
     base_dir = '/home/warrick/Desktop/roonka_features/'
+    base_dir = r"C:\Users\VR Backpack\Desktop\reintros\\"
     shapefiles = glob.glob(base_dir + '*.shp')
     for shp in shapefiles:
         generate_volume_model_file(shape_file=shp, delete=delete_after_export)
-        generate_volume_model_file(shape_file=shp, shrink_method='NEAREST_SURFACEPOINT', delete=delete_after_export)
+        # generate_volume_model_file(shape_file=shp, shrink_method='NEAREST_SURFACEPOINT', delete=delete_after_export)
         # TODO: May need to do something regarding multipatches?
         # TODO: adding a workflow which smooths out big extrusions such as in F142. Potentially using Opensubdiv and catmull clark subdivision.
