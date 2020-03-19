@@ -114,7 +114,6 @@ def generate_volume_model_file(shape_file, shrink_method='NEAREST_VERTEX', smoot
 if __name__ == '__main__':
     # change the 'base_dir' line quotes to match the folder path where all the .shp files are on your PC.
     # The directory needs to include all the files related to the .shp file.
-    base_dir = '/home/warrick/Desktop/roonka_features/'
     base_dir = r"C:\Users\VR Backpack\Desktop\reintros\\"
     shapefiles = glob.glob(base_dir + '*.shp')
     for shp in shapefiles:
