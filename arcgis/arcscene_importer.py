@@ -2,12 +2,6 @@ import os
 import glob
 import arcpy
 
-# n_78 test configurations
-directory = r"C:\Users\VR Backpack\Documents\ArcGIS\Warrick_Dataset_n=78\\"
-feature_centroids_filename = "Feature_Centroids_n_78.shp"
-symbol_field = "Feature"
-spatial_reference_path = "Coordinate Systems/Geographic Coordinate Systems/World/WGS 1984.prj"
-
 #  ========== EDIT BELOW ===========
 directory = r"C:\Users\VR Backpack\Documents\ArcGIS\BulkEx2\\"
 # include extension in feature centroid filename (e.g. .shp)
