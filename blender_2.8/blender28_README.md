@@ -44,7 +44,7 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ### Prerequisites
   * To work with shapefiles you will need to install the pyshp python library.
-  * /path/to/blender/python -m ensure pip && /path/to/blender/python -m pip install pyshp
+  * /path/to/blender/python -m ensure pip && /path/to/blender/python -m pip install pyshp.
 * Once the modules are installed the script can be run.
 
 ### Usage
