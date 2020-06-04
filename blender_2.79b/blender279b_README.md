@@ -20,7 +20,9 @@ Creates smooth 3D models with valid volumes from shapefiles containing multiple,
 ### Prerequisites
 
 * Currently this script has only been tested on versions 2.79 and 2.78 of Blender and does not yet work on Blender 2.8. 
-* Ensure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
+* Ensure you have installed and enabled the add-ons: 
+* '3D Printing Toolbox'
+* [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
 ### Installing add-ons
 
@@ -43,6 +45,10 @@ Simply go to the link for the add-on and download the .zip file using the green 
 10. After some time processing, the .dae models should have been exported and can be located in the same folder as the path specified in the base_dir.
 
 ## Point Selection Using Volumes
+
+### Description
+
+This script selects all artefacts that are within a selected volume (feature in the context of the Roonka project) and exports them to a shapefile.
 
 ### Prerequisites
 
@@ -85,6 +91,10 @@ This script creates a model that contains a volume from multiple shapefiles that
 * The trench volume will be generated in the scene and the output .dae file should be created at the output directory.
 
 ## Bulk Importer/Exporters
+
+### Description
+
+This script loads multiple files into the blender scene.
 
 ### Usage
 

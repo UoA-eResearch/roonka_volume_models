@@ -16,7 +16,9 @@ Blender 2.8
 
 ### Prerequisites
 
-Please make sure you have installed and enabled the add-ons '3D Printing Toolbox' and [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
+Please make sure you have installed and enabled the add-ons:
+* '3D Printing Toolbox'. 
+* [BlenderGIS](https://github.com/domlysz/BlenderGIS) installed for the correct version of Blender.
 
 ### How to install add-ons
 
@@ -61,21 +63,21 @@ Simply go to the link for the add-on and download the .zip file using the green 
 
 ### Prerequisites
 
-* Load in the layers you wish to connect.
+* The layers you wish to connect must be loaded into the Blender scene.
 
 ### Usage
 
-* Open up 'trench_cuboid_volumes.py' in a text editor window in Blender
+* Open up 'trench_cuboid_volumes.py' in a text editor window in Blender.
 * Edit the output path line at the top of the file to a directory that suits you.
 * Load in the shapefiles containing the points you wish to convert into a volume.
-* Select the layers you wish to convert into a trench using 3D or outliner windows
-* Run the script
+* Select the layers you wish to convert into a trench using 3D or outliner windows.
+* Run the script.
 * The trench volume will be generated in the scene and the output .dae file should be created at the output directory.
 
-### Bulk Importer/Exporters
+## Bulk Importer/Exporters
 
-### Running the script
+### Usage
 
-* Open up the importer/exporter
+* Open up the importer/exporter script.
 * Change the file paths where comments have been added to suit your case.
-* Run the script
+* Run the script.
